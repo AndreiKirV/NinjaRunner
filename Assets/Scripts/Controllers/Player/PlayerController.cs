@@ -9,35 +9,47 @@ namespace game.controllers.player
     {
         private Player _player;
         private GameObject _playerObject;
-        PlayerMovementController _playerMovementController = new PlayerMovementController();
-        PlayerAnimationController _playerAnimationController = new PlayerAnimationController();
+        private PlayerMovementController _movementController = new PlayerMovementController();
+        private PlayerAnimationController _animationController = new PlayerAnimationController();
 
         public void SetPlayer(GameObject player)
         {
             _playerObject = player;
+            _player = _playerObject.GetComponent<Player>();
+            
+            if (_player == null)
+            _playerObject.AddComponent<Player>();
         }
 
         public void SetButtonRun(Button button)
         {
-            button.onClick.AddListener(_playerMovementController.StartRunning);
+            button.onClick.AddListener(_player.SetRunningState);
+        }
+
+        public void SetButtonJump(Button button)
+        {
+            button.onClick.AddListener(_player.SetJumpingState);
         }
 
         public void Init() 
         {
-            _playerObject.AddComponent<Player>();
-            _player = _playerObject.GetComponent<Player>();
-            _player.GroundReached += _playerMovementController.SetGroundReached;
+            _player.Init();
+            _player.StartedRunning.AddListener(_animationController.Run);
+            _player.TrickWorked.AddListener(_animationController.JumpObstacle);
+            _player.StartedJumping.AddListener(_animationController.Jump);
+            _player.StartedJumping.AddListener(_movementController.Jump);
+            _player.Crashed.AddListener(_animationController.CrashedJump);
+            _player.ResetRunning.AddListener(_animationController.StopRun);
 
-            _playerMovementController.SetPlayer(_player.gameObject);
-            _playerMovementController.SetStartSpeed(_player.Speed);
-            _playerMovementController.Init();
+            _movementController.SetPlayer(_player.gameObject);
+            _movementController.Init();
 
-            _playerAnimationController.SetPlayer(_playerObject);
+            _animationController.SetPlayer(_playerObject);
         }
 
         public void Update()
         {
-            _playerMovementController.Update();
+            _movementController.Update();
         }
     }
 }

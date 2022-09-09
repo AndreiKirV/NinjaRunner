@@ -18,5 +18,36 @@ namespace game.controllers.player
         {
             _animator.SetBool(name, !_animator.GetBool(name));
         }
+
+        public void Jump()
+        {
+            ChangeFlag("IsJump");
+        }
+
+        public void Run()
+        {
+            if (!_animator.GetBool("IsRun"))
+            {
+                ChangeFlag("IsRun");
+            }
+        }
+
+        public void StopRun()
+        {
+            _animator.SetBool("IsRun", false);
+            Debug.Log("stoprun");
+        }
+
+        public void JumpObstacle()
+        {
+            int randomAnim = Random.Range(1,6);
+            ChangeFlag($"JumpObstacle{randomAnim}");
+        }
+
+        public void CrashedJump()
+        {
+            int randomAnim = Random.Range(1,2);
+            ChangeFlag($"CrashedJump1");
+        }
     }
 }

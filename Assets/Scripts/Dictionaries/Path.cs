@@ -9,5 +9,6 @@ namespace dictionaries
     {
         public static readonly string BACKGROUND = "Graphics/Background/";
         public static readonly string PREFABS = "Prefabs/";
+        public static readonly string DECOR = "Prefabs/Decor/";
     }
 }

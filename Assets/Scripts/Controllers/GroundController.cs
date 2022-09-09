@@ -6,12 +6,14 @@ namespace game.controllers
     using UnityEngine.UI;
     using game;
     using dictionaries;
+    using UnityEngine.Events;
 
     public class GroundController
     {
         private float _sizeX;
         private GameObject _player;
         private List <GameObject> _grounds = new List<GameObject>();
+        public UnityEvent<Vector3> PositionChanged = new UnityEvent<Vector3>();
 
         public void Update() 
         {
@@ -20,6 +22,7 @@ namespace game.controllers
                 if (item.transform.position.x + _sizeX < _player.transform.position.x)
                 {
                     item.transform.position = new Vector3(item.transform.position.x + (_sizeX  * 2), item.transform.position.y, item.transform.position.z);
+                    PositionChanged.Invoke(item.transform.position);
                 }
             }
         }
@@ -40,10 +43,12 @@ namespace game.controllers
             {
                 GameObject tempObj = GameMain.InstantiateObject(Resources.Load<GameObject>($"{Path.PREFABS}BG/Ground"));
                 _grounds.Add(tempObj);
+                tempObj.name = ObjectNames.Ground;
             }
 
             SetSizeX();
             _grounds[1].transform.position = new Vector3(_grounds[1].transform.position.x + _sizeX, _grounds[1].transform.position.y, _grounds[1].transform.position.z);
+            Resources.UnloadUnusedAssets();
         }
 
         private void SetSizeX()
