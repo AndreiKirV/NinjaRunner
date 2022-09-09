@@ -35,7 +35,6 @@ namespace game.controllers.player
         public void StopRun()
         {
             _animator.SetBool("IsRun", false);
-            Debug.Log("stoprun");
         }
 
         public void JumpObstacle()

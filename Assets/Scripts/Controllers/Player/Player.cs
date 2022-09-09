@@ -8,6 +8,7 @@ namespace game.controllers.player
 
     public class Player : MonoBehaviour
     {
+        private int _lives = 2;
         private float _startSpeed = 75;
         private float _trickTeleportDistance = 21;
         private float _crashedDistance = 41;
@@ -24,6 +25,7 @@ namespace game.controllers.player
         public UnityEvent StartedJumping = new UnityEvent();
         public UnityEvent TrickWorked = new UnityEvent();
         public UnityEvent Crashed = new UnityEvent();
+        public UnityEvent TrickDone = new UnityEvent();
 
         private void OnCollisionEnter2D (Collision2D other) 
         {
@@ -42,13 +44,7 @@ namespace game.controllers.player
 
             if (other.gameObject.name == ObjectNames.StopZone)
             {
-                if (!CheckForState(PlayerStates.IS_TRICK_WORKED))
-                {
-                    transform.position = new Vector3(transform.position.x - _crashedDistance, transform.position.y, transform.position.z);
-                    ResetRunningState();
-                    TrySetState(PlayerStates.IS_STOP_ZONE);
-                    TryEventInvoke(Crashed);
-                }
+                TryStartedCrashed();
             }
         }
 
@@ -56,11 +52,23 @@ namespace game.controllers.player
         {
             if (other.gameObject.name == ObjectNames.TrickZone)
             {
-                TryStartedTrick(other);
+                TryStartedTrick();
             }
         }
 
-        private void TryStartedTrick(Collider2D other)
+        private void TryStartedCrashed()
+        {
+            if (!CheckForState(PlayerStates.IS_TRICK_WORKED) && _lives > 0)
+                {
+                    transform.position = new Vector3(transform.position.x - _crashedDistance, transform.position.y, transform.position.z);
+                    ResetRunningState();
+                    TrySetState(PlayerStates.IS_STOP_ZONE);
+                    TryEventInvoke(Crashed);
+                    _lives --;
+                }
+        }
+
+        private void TryStartedTrick()
         {
             TryResetState(PlayerStates.IS_TRICK_ZONE);
 
@@ -78,10 +86,11 @@ namespace game.controllers.player
             _currentValueJump = 0;
         }
 
-        private void ReserTrickWorked()
+        private void ResetTrickWorked()
         {
             TryResetState(PlayerStates.IS_TRICK_WORKED);
             SetRunningState();
+            TryEventInvoke(TrickDone);
         }
 
         private void SetCurrentSpeed(float speed)
