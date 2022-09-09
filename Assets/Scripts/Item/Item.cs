@@ -21,12 +21,18 @@ namespace game.item
             if (other.gameObject.TryGetComponent<Player>(out Player player))
             {
                 player.TrickDone.AddListener(StartAnimatingSuccessfulTrick);
+                player.StartedIdle.AddListener(StartAnimatingCrashed);
             }
         }
 
         private void StartAnimatingSuccessfulTrick()
         {
             _animator.SetTrigger("IsTrickSucceeds");
+        }
+
+        private void StartAnimatingCrashed()
+        {
+            _animator.SetTrigger("IsCrashed");
         }
     }
 }

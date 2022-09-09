@@ -18,7 +18,7 @@ namespace game.controllers.player
             _player = _playerObject.GetComponent<Player>();
             
             if (_player == null)
-            _playerObject.AddComponent<Player>();
+            _player = _playerObject.AddComponent<Player>();
         }
 
         public void SetButtonRun(Button button)

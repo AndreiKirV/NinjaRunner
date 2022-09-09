@@ -19,6 +19,7 @@ namespace game.controllers
         public void Init()
         {
             Add($"{Path.DECOR}Trunk", ObjectNames.JumpingObstacle);
+            Add($"{Path.DECOR}Box", ObjectNames.JumpingObstacle);
         }
 
         public void CreateIItem(Vector3 position)
