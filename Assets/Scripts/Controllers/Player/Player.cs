@@ -11,10 +11,10 @@ namespace game.controllers.player
         private int _gold = 0;
         private int _lives = 1;
         private float _startSpeed = 75;
-        private float _trickTeleportDistance = 21;
-        private float _crashedDistance = 41;
         private float _currentSpeed;
         private float _jumpForce = 250;
+        private float _trickTeleportDistance = 21;
+        private float _crashedDistance = 41;
         private int _maxJump = 1;
         private int _currentValueJump = 0;
         private List<string> _states = new List<string>();

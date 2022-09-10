@@ -5,12 +5,59 @@ namespace game.controllers
     using UnityEngine;
     using dictionaries;
     using UnityEngine.UI;
+    using TMPro;
 
     public class UIController
     {
         private Camera _camera;
         private Canvas _canvas;
+        private bool _isGameActive = true;
         private Dictionary<string, GameObject> _elements = new Dictionary<string, GameObject>();
+        private Dictionary<string, TextMeshProUGUI> _counters = new Dictionary<string, TextMeshProUGUI>();
+
+        public UIController(Camera camera)
+        {
+            _camera = camera;
+        }
+
+        public void Init()
+        {
+            CreateCanvas();
+            CreatePrefabUI(ObjectNames.ButtonStartRunning);
+            CreatePrefabUI(ObjectNames.ButtonSlip).SetActive(false);
+            CreatePrefabUI(ObjectNames.ButtonJump).SetActive(false);
+            CreatePrefabUI(ObjectNames.ButtonAttack).SetActive(false);
+
+            CreateCounters();
+
+            _elements[ObjectNames.ButtonStartRunning].GetComponent<Button>().onClick.AddListener(DisableButtonRun);
+
+            Resources.UnloadUnusedAssets();
+        }
+
+        public void EnableButtonRun()
+        {
+            ChangeActivityUI(ObjectNames.ButtonStartRunning);
+            ChangeActivityUI(ObjectNames.ButtonSlip);
+            ChangeActivityUI(ObjectNames.ButtonJump);
+            ChangeActivityUI(ObjectNames.ButtonAttack);
+        }
+
+        private void CreateCounters()
+        {
+            CreateCounter(ObjectNames.GoldCounter);
+            CreateCounter(ObjectNames.SpeedCounter);
+            CreateCounter(ObjectNames.TrickCounter);
+            CreateCounter(ObjectNames.FragCounter);
+            CreateCounter(ObjectNames.LiveCounter);
+        }
+
+        private void CreateCounter(string objectName)
+        {
+            GameObject tempObject = CreatePrefabUI(objectName);
+            TextMeshProUGUI tempTMP = tempObject.GetComponentInChildren<TextMeshProUGUI>();
+            _counters.Add(objectName, tempTMP);
+        }
 
         private GameObject CreatePrefabUI(string objectName)
         {
@@ -34,23 +81,7 @@ namespace game.controllers
             _canvas.worldCamera = _camera;
         }
 
-        public UIController(Camera camera)
-        {
-            _camera = camera;
-        }
-
-        public void Init()
-        {
-            CreateCanvas();
-            CreatePrefabUI(ObjectNames.ButtonStartRunning);
-            CreatePrefabUI(ObjectNames.ButtonSlip);
-            CreatePrefabUI(ObjectNames.ButtonJump);
-            CreatePrefabUI(ObjectNames.ButtonAttack);
-
-            Resources.UnloadUnusedAssets();
-        }
-
-        public GameObject GiveUi(string targetUI)
+        private GameObject GiveUi(string targetUI)
         {
             GameObject tempObject = null;
 
@@ -69,6 +100,19 @@ namespace game.controllers
                 tempButton = button;
 
             return tempButton;
+        }
+
+        private void ChangeActivityUI(string targetObject)
+        {
+            _elements[targetObject].SetActive(!_elements[targetObject].activeSelf);
+        }
+
+        private void DisableButtonRun()
+        {
+            ChangeActivityUI(ObjectNames.ButtonStartRunning);
+            ChangeActivityUI(ObjectNames.ButtonSlip);
+            ChangeActivityUI(ObjectNames.ButtonJump);
+            ChangeActivityUI(ObjectNames.ButtonAttack);
         }
     }
 }

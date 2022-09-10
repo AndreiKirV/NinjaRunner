@@ -31,6 +31,11 @@ namespace game.controllers.player
             button.onClick.AddListener(_player.SetJumpingState);
         }
 
+        public void SetEventResetRunning(UnityEngine.Events.UnityAction call)
+        {
+            _player.ResetRunning.AddListener(call);
+        }
+
         public void Init() 
         {
             _player.Init();
