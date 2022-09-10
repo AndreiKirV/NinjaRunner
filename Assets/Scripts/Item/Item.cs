@@ -22,6 +22,7 @@ namespace game.item
             {
                 player.TrickDone.AddListener(StartAnimatingSuccessfulTrick);
                 player.StartedIdle.AddListener(StartAnimatingCrashed);
+                player.DeathByObstacle.AddListener(StartAnimatingCrashed);
             }
         }
 

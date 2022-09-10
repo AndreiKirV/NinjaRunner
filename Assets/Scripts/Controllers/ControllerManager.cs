@@ -5,37 +5,37 @@ namespace game.controllers
     using UnityEngine;
     using game.controllers.player;
     using UnityEngine.UI;
+    using dictionaries;
 
     public class ControllerManager
     {
         private Camera _camera;
         private GameObject _player;
-        private Button _startRunningPlayer;
-        private Button _jumpPlayer;
 
         private BackgroundController _backgroundController = new BackgroundController();
         private GroundController _groundController = new GroundController();
         private PlayerController _playerController = new PlayerController();
         private SpawnController _spawnController = new SpawnController();
-        private UIController _uIController = new UIController();
+        private UIController _uIController;
 
-        public ControllerManager(Camera camera, GameObject player, Button startRunningPlayer, Button jumpPlayer)
+        public ControllerManager(Camera camera, GameObject player)
         {
             _camera = camera;
             _player = player;
-            _startRunningPlayer = startRunningPlayer;
-            _jumpPlayer = jumpPlayer;
         }
 
         public void Awake() 
         {
+            _uIController = new UIController(_camera);
+            _uIController.Init();
+
             _playerController.SetPlayer(_player);
-            _playerController.SetButtonRun(_startRunningPlayer);
-            _playerController.SetButtonJump(_jumpPlayer);
+            _playerController.SetButtonRun(_uIController.GiveButton(ObjectNames.ButtonStartRunning));
+            _playerController.SetButtonJump(_uIController.GiveButton(ObjectNames.ButtonJump));
             _playerController.Init();
 
             _backgroundController.SetOffset(4, 1);
-            _backgroundController.SetStartPositionZ(40);
+            _backgroundController.SetStartPositionZ(49);
             _backgroundController.SetCamera(_camera);
             _backgroundController.Init();
 

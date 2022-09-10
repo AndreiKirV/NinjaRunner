@@ -30,7 +30,7 @@ namespace game.controllers.player
 
         private void TryRun()
         {
-            if (_player.CheckForState(PlayerStates.IS_RUNNING))
+            if (_player.CheckForState(PlayerStates.IsRun))
             _playerObject.transform.Translate(_player.CurrentSpeed * Time.deltaTime, 0, 0);
         }
 

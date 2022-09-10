@@ -8,45 +8,83 @@ namespace game.controllers.player
     public class PlayerAnimationController
     {
         private Animator _animator;
+        private int _valueJumpObstacle;
+        private int _valueCrashedJump;
+        private int _valueDeathByObstacle;
+
+        private int CheckedValueAnimation(string targetAnim)
+        {
+            bool isChecked = false;
+            int  i = 0;
+
+            while (isChecked == false)
+            {
+                AnimationClip temp = Resources.Load<AnimationClip>($"{Path.ANIMATIONS_PLAYER}{targetAnim}{i+1}");
+
+                if (temp == null)
+                {
+                    isChecked = true;
+                    break;
+                }
+
+                i++;
+            }
+
+            Resources.UnloadUnusedAssets();
+            return i;
+        }
+
+        private void ChangeFlag(string name, bool targetState)
+        {
+            _animator.SetBool(name, targetState);
+        }
 
         public void SetPlayer(GameObject player)
         {
             _animator = player.GetComponent<Animator>();
         }
 
-        private void ChangeFlag(string name)
-        {
-            _animator.SetBool(name, !_animator.GetBool(name));
-        }
-
         public void Jump()
         {
-            ChangeFlag("IsJump");
+            ChangeFlag(PlayerStates.IsJump, true);
         }
 
         public void Run()
         {
-            if (!_animator.GetBool("IsRun"))
+            if (!_animator.GetBool(PlayerStates.IsRun))
             {
-                ChangeFlag("IsRun");
+                ChangeFlag(PlayerStates.IsRun, true);
             }
         }
 
         public void StopRun()
         {
-            _animator.SetBool("IsRun", false);
+            ChangeFlag(PlayerStates.IsRun, false);
         }
 
         public void JumpObstacle()
         {
-            int randomAnim = Random.Range(1,6);
-            ChangeFlag($"JumpObstacle{randomAnim}");
+            int randomAnim = Random.Range(1,_valueJumpObstacle+1);
+            ChangeFlag($"{PlayerStates.JumpObstacle}{randomAnim}", true);
         }
 
         public void CrashedJump()
         {
-            int randomAnim = Random.Range(1,2);
-            ChangeFlag($"CrashedJump1");
+            int randomAnim = Random.Range(1,_valueCrashedJump+1);
+            ChangeFlag($"{PlayerStates.CrashedJump}{randomAnim}", true);
+        }
+
+        public void DeathByObstacle()
+        {
+            int randomAnim = Random.Range(1,_valueDeathByObstacle+1);
+            ChangeFlag($"{PlayerStates.DeathByObstacle}{randomAnim}", true);
+        }
+
+        public void Init()
+        {
+            _valueCrashedJump = CheckedValueAnimation(PlayerStates.CrashedJump);
+            _valueDeathByObstacle = CheckedValueAnimation(PlayerStates.DeathByObstacle);
+            _valueJumpObstacle = CheckedValueAnimation(PlayerStates.JumpObstacle);
         }
     }
 }

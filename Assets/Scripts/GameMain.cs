@@ -13,13 +13,11 @@ namespace game
     {
         [SerializeField] private Camera _camera;
         [SerializeField] private GameObject _player;
-        [SerializeField] private Button _startRunningPlayer;
-         [SerializeField] private Button _jumpPlayer;
         private ControllerManager _controllerManager;
 
         private void Awake() 
         {
-            _controllerManager = new ControllerManager(_camera, _player, _startRunningPlayer, _jumpPlayer);
+            _controllerManager = new ControllerManager(_camera, _player);
             _controllerManager.Awake();
         }
 
@@ -41,6 +39,11 @@ namespace game
         public static GameObject InstantiateObject(GameObject obj, Vector3 position)
         {
             return Instantiate(obj, position, Quaternion.identity);
+        }
+
+        public static GameObject InstantiateObject(GameObject obj, Transform parent)
+        {
+            return Instantiate(obj, parent);
         }
 
         public static void DestroyObject(GameObject obj, float delay)

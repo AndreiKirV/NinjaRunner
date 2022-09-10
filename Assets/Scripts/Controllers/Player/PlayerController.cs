@@ -40,11 +40,13 @@ namespace game.controllers.player
             _player.StartedJumping.AddListener(_movementController.Jump);
             _player.Crashed.AddListener(_animationController.CrashedJump);
             _player.ResetRunning.AddListener(_animationController.StopRun);
+            _player.DeathByObstacle.AddListener(_animationController.DeathByObstacle);
 
             _movementController.SetPlayer(_player.gameObject);
             _movementController.Init();
 
             _animationController.SetPlayer(_playerObject);
+            _animationController.Init();
         }
 
         public void Update()
