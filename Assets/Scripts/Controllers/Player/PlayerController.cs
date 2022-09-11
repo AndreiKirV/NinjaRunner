@@ -38,7 +38,6 @@ namespace game.controllers.player
 
         public void Init() 
         {
-            _player.Init();
             _player.StartedRunning.AddListener(_animationController.Run);
             _player.TrickWorked.AddListener(_animationController.JumpObstacle);
             _player.StartedJumping.AddListener(_animationController.Jump);
@@ -46,6 +45,7 @@ namespace game.controllers.player
             _player.Crashed.AddListener(_animationController.CrashedJump);
             _player.ResetRunning.AddListener(_animationController.StopRun);
             _player.DeathByObstacle.AddListener(_animationController.DeathByObstacle);
+            _player.Init();
 
             _movementController.SetPlayer(_player.gameObject);
             _movementController.Init();
@@ -57,6 +57,11 @@ namespace game.controllers.player
         public void Update()
         {
             _movementController.Update();
+        }
+
+        public void FixedUpdate() 
+        {
+            _movementController.FixedUpdate();
         }
     }
 }

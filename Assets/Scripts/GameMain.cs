@@ -31,6 +31,11 @@ namespace game
             _controllerManager.Update();
         }
 
+        private void FixedUpdate() 
+        {
+            _controllerManager.FixedUpdate();
+        }
+
         public static GameObject InstantiateObject(GameObject obj)
         {
             return Instantiate(obj);

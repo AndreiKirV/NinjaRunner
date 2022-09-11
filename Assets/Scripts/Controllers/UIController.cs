@@ -5,7 +5,9 @@ namespace game.controllers
     using UnityEngine;
     using dictionaries;
     using UnityEngine.UI;
+    using UnityEngine.Events;
     using TMPro;
+    using game.controllers.player;
 
     public class UIController
     {
@@ -32,6 +34,12 @@ namespace game.controllers
 
             _elements[ObjectNames.ButtonStartRunning].GetComponent<Button>().onClick.AddListener(DisableButtonRun);
 
+            Player.ValueTrickChanged.AddListener(ChangeTrickValue);
+            Player.ValueLivesChanged.AddListener(ChangeLivesValue);
+            Player.ValueGoldChanged.AddListener(ChangeGoldValue);
+            Player.ValueCurrentSpeedChanged.AddListener(ChangeSpeedValue);
+            Player.ValueFragChanged.AddListener(ChangeFragValue);
+
             Resources.UnloadUnusedAssets();
         }
 
@@ -43,6 +51,36 @@ namespace game.controllers
             ChangeActivityUI(ObjectNames.ButtonAttack);
         }
 
+        private void ChangeFragValue(int value)
+        {
+            ChangeCounterValue(ObjectNames.FragCounter, value.ToString());
+        }
+
+        private void ChangeSpeedValue(float value)
+        {
+            ChangeCounterValue(ObjectNames.SpeedCounter, value.ToString());
+        }
+
+        private void ChangeTrickValue(int value)
+        {
+            ChangeCounterValue(ObjectNames.TrickCounter, value.ToString());
+        }
+
+        private void ChangeGoldValue(int value)
+        {
+            ChangeCounterValue(ObjectNames.GoldCounter, value.ToString());
+        }
+
+        private void ChangeLivesValue(int value)
+        {
+            ChangeCounterValue(ObjectNames.LiveCounter, value.ToString());
+        }
+
+        private void ChangeCounterValue(string name, string text)
+        {
+            _counters[name].text = text;
+        }
+
         private void CreateCounters()
         {
             CreateCounter(ObjectNames.GoldCounter);
@@ -50,6 +88,17 @@ namespace game.controllers
             CreateCounter(ObjectNames.TrickCounter);
             CreateCounter(ObjectNames.FragCounter);
             CreateCounter(ObjectNames.LiveCounter);
+        }
+
+        public Button GiveButton(string targetButton)
+        {
+            Button tempButton = null;
+            GameObject tempObject = GiveUi(targetButton);
+
+            if (tempObject != null && tempObject.TryGetComponent<Button>(out Button button))
+                tempButton = button;
+
+            return tempButton;
         }
 
         private void CreateCounter(string objectName)
@@ -89,17 +138,6 @@ namespace game.controllers
                 tempObject = _elements[targetUI];
 
             return tempObject;
-        }
-
-        public Button GiveButton(string targetButton)
-        {
-            Button tempButton = null;
-            GameObject tempObject = GiveUi(targetButton);
-
-            if (tempObject != null && tempObject.TryGetComponent<Button>(out Button button))
-                tempButton = button;
-
-            return tempButton;
         }
 
         private void ChangeActivityUI(string targetObject)

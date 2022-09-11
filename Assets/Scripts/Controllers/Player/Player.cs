@@ -9,20 +9,25 @@ namespace game.controllers.player
     public class Player : MonoBehaviour
     {
         private int _gold = 0;
-        private int _lives = 1;
+        private int _lives = 2;
+        private int _trickValue = 0;
+        private int _fragValue = 0;
+        private int _maxJump = 1;
+        private int _currentValueJump = 0;
         private float _startSpeed = 75;
         private float _currentSpeed;
         private float _jumpForce = 250;
         private float _trickTeleportDistance = 21;
         private float _crashedDistance = 41;
-        private int _maxJump = 1;
-        private int _currentValueJump = 0;
+
         private List<string> _states = new List<string>();
+
         public float JumpForce => _jumpForce;
         public float StartSpeed => _startSpeed;
         public float CurrentSpeed => _currentSpeed;
         public int Gold => _gold;
         public int Lives => _lives;
+
         public UnityEvent StartedRunning = new UnityEvent();
         public UnityEvent ResetRunning = new UnityEvent();
         public UnityEvent StartedJumping = new UnityEvent();
@@ -31,6 +36,12 @@ namespace game.controllers.player
         public UnityEvent TrickDone = new UnityEvent();
         public UnityEvent StartedIdle = new UnityEvent();
         public UnityEvent DeathByObstacle = new UnityEvent();
+
+        public static UnityEvent<int> ValueTrickChanged = new UnityEvent<int>();
+        public static UnityEvent<int> ValueLivesChanged = new UnityEvent<int>();
+        public static UnityEvent<int> ValueGoldChanged = new UnityEvent<int>();
+        public static UnityEvent<int> ValueFragChanged = new UnityEvent<int>();
+        public static UnityEvent<float> ValueCurrentSpeedChanged = new UnityEvent<float>();
 
         private void OnCollisionEnter2D (Collision2D other) 
         {
@@ -47,16 +58,17 @@ namespace game.controllers.player
                 TrySetState(PlayerStates.IsTrickZone);
             }
 
-            if (other.gameObject.name == ObjectNames.StopZone && _lives > 0)
+            if (other.gameObject.name == ObjectNames.StopZone && _lives > 1)
             {
                 TryStartedCrashed();
             }
-            else if (other.gameObject.name == ObjectNames.StopZone && _lives <= 0)
+            else if (other.gameObject.name == ObjectNames.StopZone && _lives <= 1)
             {
                 TryEventInvoke(DeathByObstacle);
                 TrySetState(PlayerStates.DeathByObstacle);
                 ResetRunningState();
                 TryEventInvoke(ResetRunning);
+                TakeLivesValue();
             }
         }
 
@@ -76,8 +88,14 @@ namespace game.controllers.player
                 ResetRunningState();
                 TrySetState(PlayerStates.CrashedJump);
                 TryEventInvoke(Crashed);
-                _lives --;
+                TakeLivesValue();
             }
+        }
+
+        private void TakeLivesValue()
+        {
+            _lives --;
+            TryEventInvoke(ValueLivesChanged, _lives);
         }
 
         private void TryStartedTrick()
@@ -102,7 +120,14 @@ namespace game.controllers.player
         {
             TryResetState(PlayerStates.JumpObstacle);
             SetRunningState();
+            AddTrickValue();
+        }
+
+        private void AddTrickValue()
+        {
             TryEventInvoke(TrickDone);
+            _trickValue ++;
+            TryEventInvoke(ValueTrickChanged, _trickValue);
         }
 
         private void SetCurrentSpeed(float speed)
@@ -126,6 +151,18 @@ namespace game.controllers.player
         {
             if (targetEvent != null)
             targetEvent.Invoke();
+        }
+
+        private void TryEventInvoke(UnityEvent<int> targetEvent, int targetValue)
+        {
+            if (targetEvent != null)
+            targetEvent.Invoke(targetValue);
+        }
+
+        private void TryEventInvoke(UnityEvent<float> targetEvent, float targetValue)
+        {
+            if (targetEvent != null)
+            targetEvent.Invoke(targetValue);
         }
 
         private void ResetRunningState()
@@ -166,6 +203,11 @@ namespace game.controllers.player
         public void Init()
         {
             SetCurrentSpeed(_startSpeed);
+            TryEventInvoke(ValueTrickChanged, _trickValue);
+            TryEventInvoke(ValueLivesChanged, _lives);
+            TryEventInvoke(ValueGoldChanged, _gold);
+            TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
+            TryEventInvoke(ValueFragChanged, _fragValue);
         }
 
         public bool CheckForState(string currentState)

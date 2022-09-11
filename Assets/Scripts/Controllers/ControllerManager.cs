@@ -58,5 +58,10 @@ namespace game.controllers
             _groundController.Update();
             _playerController.Update();
         }
+
+        public void FixedUpdate()
+        {
+            _playerController.FixedUpdate();
+        }
     }
 }
