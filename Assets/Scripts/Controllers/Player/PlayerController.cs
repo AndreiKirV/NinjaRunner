@@ -31,6 +31,11 @@ namespace game.controllers.player
             button.onClick.AddListener(_player.SetJumpingState);
         }
 
+        public void SetButtonHit(Button button)
+        {
+            button.onClick.AddListener(_player.SetHitState);
+        }
+
         public void SetEventResetRunning(UnityEngine.Events.UnityAction call)
         {
             _player.ResetRunning.AddListener(call);
@@ -45,6 +50,7 @@ namespace game.controllers.player
             _player.Crashed.AddListener(_animationController.CrashedJump);
             _player.ResetRunning.AddListener(_animationController.StopRun);
             _player.DeathByObstacle.AddListener(_animationController.DeathByObstacle);
+            _player.StartedHit.AddListener(_animationController.Hit);
             _player.Init();
 
             _movementController.SetPlayer(_player.gameObject);

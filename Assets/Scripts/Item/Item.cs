@@ -9,7 +9,9 @@ namespace game.item
 
     public class Item : MonoBehaviour
     {
-        Animator _animator;
+        protected Animator _animator;
+        protected float _demolitionDistance = 23;
+        private bool isSigned = false;
         private void Awake() 
         {
             if (TryGetComponent<Animator>(out Animator animator))
@@ -18,20 +20,35 @@ namespace game.item
 
         private void OnTriggerEnter2D(Collider2D other) 
         {
-            if (other.gameObject.TryGetComponent<Player>(out Player player))
+            TryAddListener(other);
+            TryCrush(other);  
+        }
+
+        protected virtual void TryAddListener(Collider2D other)
+        {
+            if (!isSigned && other.gameObject.TryGetComponent<Player>(out Player player))
             {
                 player.TrickDone.AddListener(StartAnimatingSuccessfulTrick);
                 player.StartedIdle.AddListener(StartAnimatingCrashed);
                 player.DeathByObstacle.AddListener(StartAnimatingCrashed);
+                isSigned = true;
             }
         }
 
-        private void StartAnimatingSuccessfulTrick()
+        protected virtual void TryCrush(Collider2D other)
+        {
+            if (other.gameObject.name == ObjectNames.AttackBox && transform.position.x - other.gameObject.transform.position.x <= _demolitionDistance)
+            {
+                StartAnimatingCrashed();
+            }
+        }
+
+        protected virtual void StartAnimatingSuccessfulTrick()
         {
             _animator.SetTrigger("IsTrickSucceeds");
         }
 
-        private void StartAnimatingCrashed()
+        protected virtual void StartAnimatingCrashed()
         {
             _animator.SetTrigger("IsCrashed");
         }

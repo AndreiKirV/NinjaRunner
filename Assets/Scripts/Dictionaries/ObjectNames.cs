@@ -20,5 +20,6 @@ namespace dictionaries
         public static readonly string TrickCounter = "TrickCounter";
         public static readonly string FragCounter = "FragCounter";
         public static readonly string LiveCounter = "LiveCounter";
+        public static readonly string AttackBox = "AttackBox";
     }
 }

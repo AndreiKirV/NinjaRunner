@@ -19,7 +19,6 @@ namespace game.controllers.player
 
         public void FixedUpdate() 
         {
-            //TryRun();
         }
 
         public void SetPlayer(GameObject player)
@@ -37,8 +36,6 @@ namespace game.controllers.player
         {
             if (_player.CheckForState(PlayerStates.IsRun))
             _playerObject.transform.position = Vector2.Lerp(_playerObject.transform.position, new Vector2(_playerObject.transform.position.x + _player.CurrentSpeed,_playerObject.transform.position.y), Time.deltaTime);
-            //_playerObject.transform.Translate(_player.CurrentSpeed * Time.deltaTime, 0, 0);
-            //_rigidbody.velocity = new Vector2(0, _player.CurrentSpeed * Time.deltaTime);
         }
 
         public void Jump()

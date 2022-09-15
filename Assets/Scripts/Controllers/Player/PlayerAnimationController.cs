@@ -57,6 +57,11 @@ namespace game.controllers.player
             }
         }
 
+        public void Hit()
+        {
+            ChangeFlag(PlayerStates.Hit, true);
+        }
+
         public void StopRun()
         {
             ChangeFlag(PlayerStates.IsRun, false);

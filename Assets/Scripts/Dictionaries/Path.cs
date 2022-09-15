@@ -9,8 +9,9 @@ namespace dictionaries
     {
         public static readonly string BACKGROUND = "Graphics/Background/";
         public static readonly string PREFABS = "Prefabs/";
-        public static readonly string DECOR = "Prefabs/Decor/";
+        public static readonly string DECOR = $"{PREFABS}Decor/";
         public static readonly string ANIMATIONS_PLAYER = "Graphics/Animations/Character/";
         public static readonly string PREFABS_UI = $"{PREFABS}UI/";
+        public static readonly string PREFABS_EFFECTS = $"{PREFABS}Effects/";
     }
 }

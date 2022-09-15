@@ -13,5 +13,7 @@ namespace dictionaries
         public static readonly string JumpObstacle = "JumpObstacle";
         public static readonly string CrashedJump = "CrashedJump";
         public static readonly string DeathByObstacle = "DeathByObstacle";
+        public static readonly string IsStopZone = "IsStopZone";
+        public static readonly string Hit = "Hit";
     }
 }

@@ -5,6 +5,7 @@ namespace game.controllers.player
     using UnityEngine;
     using UnityEngine.Events;
     using dictionaries;
+    using game.item;
 
     public class Player : MonoBehaviour
     {
@@ -19,6 +20,7 @@ namespace game.controllers.player
         private float _jumpForce = 250;
         private float _trickTeleportDistance = 21;
         private float _crashedDistance = 41;
+        private GameObject TrickEffect;
 
         private List<string> _states = new List<string>();
 
@@ -36,6 +38,7 @@ namespace game.controllers.player
         public UnityEvent TrickDone = new UnityEvent();
         public UnityEvent StartedIdle = new UnityEvent();
         public UnityEvent DeathByObstacle = new UnityEvent();
+        public UnityEvent StartedHit = new UnityEvent();
 
         public static UnityEvent<int> ValueTrickChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueLivesChanged = new UnityEvent<int>();
@@ -56,19 +59,26 @@ namespace game.controllers.player
             if (other.gameObject.name == ObjectNames.TrickZone)
             {
                 TrySetState(PlayerStates.IsTrickZone);
+                TrickEffect.SetActive(true);
             }
 
-            if (other.gameObject.name == ObjectNames.StopZone && _lives > 1)
+            if (other.gameObject.name == ObjectNames.StopZone)
             {
-                TryStartedCrashed();
+                TrySetState(PlayerStates.IsStopZone);
+
+                if (_lives <= 1)
+                {
+                    TryStartedDeath();
+                }
+                else if (_lives > 1)
+                {
+                    TryStartedCrashed();
+                }
             }
-            else if (other.gameObject.name == ObjectNames.StopZone && _lives <= 1)
+
+            if (!CheckForState(PlayerStates.Hit) && other.gameObject.transform.parent.TryGetComponent<Trunk>(out Trunk trunk))
             {
-                TryEventInvoke(DeathByObstacle);
-                TrySetState(PlayerStates.DeathByObstacle);
-                ResetRunningState();
-                TryEventInvoke(ResetRunning);
-                TakeLivesValue();
+                trunk.AddListenerEvent(AddGold);
             }
         }
 
@@ -78,15 +88,33 @@ namespace game.controllers.player
             {
                 TryStartedTrick();
             }
+
+            if (other.gameObject.name == ObjectNames.StopZone)
+            {
+                TryResetState(PlayerStates.IsStopZone);
+            }
+        }
+
+        private void TryStartedDeath()
+        {
+            if (!CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.IsTrickZone))
+            {
+                TryEventInvoke(DeathByObstacle);
+                TrySetState(PlayerStates.DeathByObstacle);
+                ResetRunningState();
+                TryEventInvoke(ResetRunning);
+                TakeLivesValue();
+            }
         }
 
         private void TryStartedCrashed()
         {
-            if (!CheckForState(PlayerStates.JumpObstacle))
+            if (!CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.DeathByObstacle))
             {
                 transform.position = new Vector3(transform.position.x - _crashedDistance, transform.position.y, transform.position.z);
                 ResetRunningState();
                 TrySetState(PlayerStates.CrashedJump);
+                TryResetState(PlayerStates.IsStopZone);
                 TryEventInvoke(Crashed);
                 TakeLivesValue();
             }
@@ -101,8 +129,9 @@ namespace game.controllers.player
         private void TryStartedTrick()
         {
             TryResetState(PlayerStates.IsTrickZone);
+            TrickEffect.SetActive(false);
 
-            if (CheckForState(PlayerStates.JumpObstacle))
+            if (CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.IsStopZone))
             {
                 transform.position = new Vector3(transform.position.x + _trickTeleportDistance, transform.position.y, transform.position.z);
                 ResetRunningState();
@@ -170,6 +199,11 @@ namespace game.controllers.player
             TryResetState(PlayerStates.IsRun);
         }
 
+        private void ResetHitState()
+        {
+            TryResetState(PlayerStates.Hit);
+        }
+
         private void SetIdleState()
         {
             TryEventInvoke(ResetRunning);
@@ -177,15 +211,23 @@ namespace game.controllers.player
             _states.Clear();
         }
 
+        private GameObject CreateObject(string path)
+        {
+            GameObject tempObject = Resources.Load<GameObject>(path);
+            GameObject targetObject = GameMain.InstantiateObject(tempObject, gameObject.transform);
+            targetObject.name = tempObject.name;
+            return targetObject;
+        }
+
         public void SetJumpingState()
         {
-            if (_currentValueJump < _maxJump && !CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.CrashedJump) && !CheckForState(PlayerStates.DeathByObstacle))
+            if (_currentValueJump < _maxJump && !CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.CrashedJump) && !CheckForState(PlayerStates.DeathByObstacle) && _states.Count <= 1)
             {
                 TrySetState(PlayerStates.IsJump);
                 TryEventInvoke(StartedJumping);
                 _currentValueJump ++;
             }
-            else if (CheckForState(PlayerStates.IsTrickZone))
+            else if (CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.IsStopZone))
             {
                 TrySetState(PlayerStates.JumpObstacle);
             }
@@ -200,6 +242,15 @@ namespace game.controllers.player
             }
         }
 
+        public void SetHitState()
+        {
+            if (_states.Count <= 1 && CheckForState(PlayerStates.IsRun))
+            {
+                TrySetState(PlayerStates.Hit);
+                TryEventInvoke(StartedHit);
+            }
+        }
+
         public void Init()
         {
             SetCurrentSpeed(_startSpeed);
@@ -208,6 +259,9 @@ namespace game.controllers.player
             TryEventInvoke(ValueGoldChanged, _gold);
             TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
             TryEventInvoke(ValueFragChanged, _fragValue);
+
+            TrickEffect = CreateObject($"{Path.PREFABS_EFFECTS}TrickLighting");
+            Resources.UnloadUnusedAssets();
         }
 
         public bool CheckForState(string currentState)
@@ -220,6 +274,12 @@ namespace game.controllers.player
             _states.Clear();
             TryEventInvoke(StartedIdle);
             _lives = 1;
+        }
+
+        private void AddGold(int value)
+        {
+            _gold += value;
+            TryEventInvoke(ValueGoldChanged, _gold);
         }
     }
 }
