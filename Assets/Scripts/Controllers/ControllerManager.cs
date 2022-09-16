@@ -33,6 +33,7 @@ namespace game.controllers
             _playerController.SetButtonRun(_uIController.GiveButton(ObjectNames.ButtonStartRunning));
             _playerController.SetButtonJump(_uIController.GiveButton(ObjectNames.ButtonJump));
             _playerController.SetButtonHit(_uIController.GiveButton(ObjectNames.ButtonAttack));
+            _playerController.SetButtonSlide(_uIController.GiveButton(ObjectNames.ButtonSlide));
             _playerController.SetEventResetRunning(_uIController.EnableButtonRun);
             _playerController.Init();
 

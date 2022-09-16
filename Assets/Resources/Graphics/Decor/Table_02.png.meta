@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c4ac85accd009974cb7b4e051f996033
+guid: fca06c7c4f566304ca613876d1478397
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -71,7 +71,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -154,22 +154,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Sword2_0
+      name: Table_02_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 2
-        width: 373
-        height: 123
+        x: 0
+        y: 0
+        width: 128
+        height: 112
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 47, w: 24}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 33630f30d30bc8b478687db5a86feb85
-      internalID: 1112989035
+      spriteID: 91579517c4076624db0ede7394441f32
+      internalID: -953639583
       vertices: []
       indices: 
       edges: []
@@ -185,7 +185,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Sword2_0: 1112989035
+      Table_02_0: -953639583
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 

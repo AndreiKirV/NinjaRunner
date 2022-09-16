@@ -20,13 +20,16 @@ namespace game.controllers
         {
             Add($"{Path.DECOR}Trunk", ObjectNames.JumpingObstacle);
             Add($"{Path.DECOR}Box", ObjectNames.JumpingObstacle);
+            Add($"{Path.DECOR}Crate", ObjectNames.JumpingObstacle);
+            Add($"{Path.DECOR}{ObjectNames.FullTable}", ObjectNames.SlideObstacle);
+
         }
 
         public void CreateIItem(Vector3 position)
         {
-            GameObject tempObject = GameMain.InstantiateObject(_items[Random.Range(0, _items.Count)], position);
-            tempObject.name = ObjectNames.JumpingObstacle;
-            GameMain.DestroyObject(tempObject, 15);
+            int tempIndex = Random.Range(0, _items.Count);
+            GameObject tempObject = GameMain.InstantiateObject(_items[tempIndex], position);
+            tempObject.name = _items[tempIndex].name;
         }
     }
 }

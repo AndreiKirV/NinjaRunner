@@ -16,6 +16,8 @@ namespace game.item
         {
             if (TryGetComponent<Animator>(out Animator animator))
             _animator = animator;
+
+            GameMain.DestroyObject(gameObject, 10);
         }
 
         private void OnTriggerEnter2D(Collider2D other) 
@@ -37,7 +39,7 @@ namespace game.item
 
         protected virtual void TryCrush(Collider2D other)
         {
-            if (other.gameObject.name == ObjectNames.AttackBox && transform.position.x - other.gameObject.transform.position.x <= _demolitionDistance)
+            if (other.gameObject.name == ObjectNames.AttackBox && transform.position.x - other.gameObject.transform.position.x <= _demolitionDistance && transform.position.x - other.gameObject.transform.position.x >=0)
             {
                 StartAnimatingCrashed();
             }
@@ -45,11 +47,13 @@ namespace game.item
 
         protected virtual void StartAnimatingSuccessfulTrick()
         {
+            if (_animator != null)
             _animator.SetTrigger("IsTrickSucceeds");
         }
 
         protected virtual void StartAnimatingCrashed()
         {
+            if (_animator != null)
             _animator.SetTrigger("IsCrashed");
         }
     }

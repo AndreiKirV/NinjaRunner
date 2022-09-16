@@ -34,7 +34,7 @@ namespace game.controllers.player
             return i;
         }
 
-        private void ChangeFlag(string name, bool targetState)
+        public void ChangeFlag(string name, bool targetState)
         {
             _animator.SetBool(name, targetState);
         }
@@ -49,12 +49,27 @@ namespace game.controllers.player
             ChangeFlag(PlayerStates.IsJump, true);
         }
 
+        public void StopJump()
+        {
+            ChangeFlag(PlayerStates.IsJump, false);
+        }
+
         public void Run()
         {
             if (!_animator.GetBool(PlayerStates.IsRun))
             {
                 ChangeFlag(PlayerStates.IsRun, true);
             }
+        }
+
+        public void Slide()
+        {
+            ChangeFlag(PlayerStates.Slide, true);
+        }
+
+        public void StopSlide()
+        {
+            ChangeFlag(PlayerStates.Slide, false);
         }
 
         public void Hit()

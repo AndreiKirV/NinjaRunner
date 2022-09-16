@@ -26,7 +26,7 @@ namespace game.controllers
         {
             CreateCanvas();
             CreatePrefabUI(ObjectNames.ButtonStartRunning);
-            CreatePrefabUI(ObjectNames.ButtonSlip).SetActive(false);
+            CreatePrefabUI(ObjectNames.ButtonSlide).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonJump).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonAttack).SetActive(false);
 
@@ -46,7 +46,7 @@ namespace game.controllers
         public void EnableButtonRun()
         {
             ChangeActivityUI(ObjectNames.ButtonStartRunning);
-            ChangeActivityUI(ObjectNames.ButtonSlip);
+            ChangeActivityUI(ObjectNames.ButtonSlide);
             ChangeActivityUI(ObjectNames.ButtonJump);
             ChangeActivityUI(ObjectNames.ButtonAttack);
         }
@@ -148,7 +148,7 @@ namespace game.controllers
         private void DisableButtonRun()
         {
             ChangeActivityUI(ObjectNames.ButtonStartRunning);
-            ChangeActivityUI(ObjectNames.ButtonSlip);
+            ChangeActivityUI(ObjectNames.ButtonSlide);
             ChangeActivityUI(ObjectNames.ButtonJump);
             ChangeActivityUI(ObjectNames.ButtonAttack);
         }
