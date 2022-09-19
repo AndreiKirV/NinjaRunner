@@ -29,6 +29,7 @@ namespace game.controllers
             CreatePrefabUI(ObjectNames.ButtonSlide).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonJump).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonAttack).SetActive(false);
+            CreatePrefabUI(ObjectNames.ButtonRestart);
 
             CreateCounters();
 

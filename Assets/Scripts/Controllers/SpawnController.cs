@@ -18,11 +18,15 @@ namespace game.controllers
 
         public void Init()
         {
-            Add($"{Path.DECOR}Trunk", ObjectNames.JumpingObstacle);
-            Add($"{Path.DECOR}Box", ObjectNames.JumpingObstacle);
-            Add($"{Path.DECOR}Crate", ObjectNames.JumpingObstacle);
+            Add($"{Path.DECOR}{ObjectNames.Trunk}", ObjectNames.Trunk);
+            Add($"{Path.DECOR}{ObjectNames.HealingChest}", ObjectNames.HealingChest);
+            Add($"{Path.DECOR}{ObjectNames.Box}", ObjectNames.JumpingObstacle);
+            Add($"{Path.DECOR}{ObjectNames.Crate}", ObjectNames.JumpingObstacle);
+            Add($"{Path.DECOR}{ObjectNames.Furnace}", ObjectNames.JumpingObstacle);
+            Add($"{Path.DECOR}{ObjectNames.FishBox}", ObjectNames.JumpingObstacle);
             Add($"{Path.DECOR}{ObjectNames.FullTable}", ObjectNames.SlideObstacle);
-
+            Add($"{Path.DECOR}{ObjectNames.Table}", ObjectNames.SlideObstacle);
+            Add($"{Path.DECOR}{ObjectNames.TableWithArmor}", ObjectNames.SlideObstacle);
         }
 
         public void CreateIItem(Vector3 position)

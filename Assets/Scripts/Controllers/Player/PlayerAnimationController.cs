@@ -11,6 +11,7 @@ namespace game.controllers.player
         private int _valueJumpObstacle;
         private int _valueCrashedJump;
         private int _valueDeathByObstacle;
+        private string _currentDeathByObstacle;
 
         private int CheckedValueAnimation(string targetAnim)
         {
@@ -98,6 +99,12 @@ namespace game.controllers.player
         {
             int randomAnim = Random.Range(1,_valueDeathByObstacle+1);
             ChangeFlag($"{PlayerStates.DeathByObstacle}{randomAnim}", true);
+            _currentDeathByObstacle = $"{PlayerStates.DeathByObstacle}{randomAnim}";
+        }
+
+        public void StopDeath()
+        {
+            ChangeFlag(_currentDeathByObstacle,false);
         }
 
         public void Init()

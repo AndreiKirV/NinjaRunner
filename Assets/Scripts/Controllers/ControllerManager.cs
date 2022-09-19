@@ -17,6 +17,7 @@ namespace game.controllers
         private PlayerController _playerController = new PlayerController();
         private SpawnController _spawnController = new SpawnController();
         private UIController _uIController;
+        public static float Timer = 0;
 
         public ControllerManager(Camera camera, GameObject player)
         {
@@ -35,6 +36,7 @@ namespace game.controllers
             _playerController.SetButtonHit(_uIController.GiveButton(ObjectNames.ButtonAttack));
             _playerController.SetButtonSlide(_uIController.GiveButton(ObjectNames.ButtonSlide));
             _playerController.SetEventResetRunning(_uIController.EnableButtonRun);
+            _playerController.SetButtonRestart(_uIController.GiveButton(ObjectNames.ButtonRestart));
             _playerController.Init();
 
             _backgroundController.SetOffset(4, 1);
@@ -59,6 +61,8 @@ namespace game.controllers
             _backgroundController.Update();
             _groundController.Update();
             _playerController.Update();
+
+            Timer += Time.deltaTime;
         }
 
         public void FixedUpdate()

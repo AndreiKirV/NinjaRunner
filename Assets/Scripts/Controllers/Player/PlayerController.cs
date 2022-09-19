@@ -42,6 +42,11 @@ namespace game.controllers.player
             button.onClick.AddListener(_player.TrySetSlideState);
         }
 
+        public void SetButtonRestart(Button button)
+        {
+        button.onClick.AddListener(_player.ResetPlayer);
+        }
+
         public void SetEventResetRunning(UnityEngine.Events.UnityAction call)
         {
             _player.ResetRunning.AddListener(call);
@@ -59,6 +64,7 @@ namespace game.controllers.player
             _player.StartedHit.AddListener(_animationController.Hit);
             _player.StartedSlide.AddListener(_animationController.Slide);
             _player.ResetSlide.AddListener(_animationController.StopSlide);
+            _player.StartedIdle.AddListener(_animationController.StopDeath);
             //_player.ResetJumping.AddListener(_animationController.StopJump);
             _player.ResetJumping.AddListener(delegate() {_animationController.ChangeFlag(PlayerStates.IsJump, false);});
             _player.ResetHit.AddListener(delegate() {_animationController.ChangeFlag(PlayerStates.Hit, false);});

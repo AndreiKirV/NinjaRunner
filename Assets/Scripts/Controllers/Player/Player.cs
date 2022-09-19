@@ -10,18 +10,30 @@ namespace game.controllers.player
     public class Player : MonoBehaviour
     {
         private int _gold = 0;
-        private int _lives = 99;
+        private int _lives = 5;
         private int _trickValue = 0;
         private int _fragValue = 0;
         private int _maxJump = 1;
         private int _currentValueJump = 0;
         private float _startSpeed = 75;
         private float _currentSpeed;
+        private float _maxSpeed = 135;
         private float _jumpForce = 250;
         private float _trickTeleportDistance = 21;
         private float _crashedDistance = 41;
+        private float _timePreviousJump = 0;
+        private float _timePreviousHit = 0;
+        private float _timePreviousSlide = 0;
+        private float _coolDownJump = 1.5f;
+        private float _coolDownHit = 4;
+        private float _coolDownSlide = 2.5f;
+        private float _slideTime = 2;
+        private float _timePreviousSpeedIncrease = 0;
+        private float _stepSpeedIncrease = 5;
+        private float _stepSpeed = 1;
         private GameObject _trickEffect;
         private GameObject _attackBox;
+        private ParticleSystem _fatigueEffect;
 
         private List<string> _states = new List<string>();
 
@@ -51,6 +63,22 @@ namespace game.controllers.player
         public static UnityEvent<int> ValueFragChanged = new UnityEvent<int>();
         public static UnityEvent<float> ValueCurrentSpeedChanged = new UnityEvent<float>();
 
+        private void Update() 
+        {
+            if (CheckForState(PlayerStates.Slide) && _timePreviousSlide + _slideTime <= ControllerManager.Timer)
+            {
+                ResetSlideState();
+            }
+
+            if (_currentSpeed < _maxSpeed && ControllerManager.Timer >= _stepSpeedIncrease + _timePreviousSpeedIncrease)
+            {
+                _currentSpeed += _stepSpeed;
+                TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
+                _timePreviousSpeedIncrease = ControllerManager.Timer;
+            }
+
+        }
+
         private void OnCollisionEnter2D (Collision2D other) 
         {
             ResetJumpState();
@@ -66,8 +94,7 @@ namespace game.controllers.player
 
             if (other.gameObject.name == ObjectNames.StopZone && !_attackBox.activeSelf)
             {
-                ResetSlideState();
-                ResetJumpState();
+                ResetRunningState();
                 ResetHitState();
                 TrySetState(PlayerStates.IsStopZone);
 
@@ -84,6 +111,10 @@ namespace game.controllers.player
             if (!CheckForState(PlayerStates.Hit) && other.gameObject.name != ObjectNames.Ground && other.gameObject.transform.parent.TryGetComponent<Trunk>(out Trunk trunk))
             {
                 trunk.AddListenerEvent(AddGold);
+            }
+            else if (!CheckForState(PlayerStates.Hit) && other.gameObject.name != ObjectNames.Ground && other.gameObject.transform.parent.TryGetComponent<HealingChest>(out HealingChest healingChest))
+            {
+                healingChest.AddListenerEvent(AddLives);
             }
         }
 
@@ -114,6 +145,7 @@ namespace game.controllers.player
                 ResetRunningState();
                 TryEventInvoke(ResetRunning);
                 TakeLivesValue();
+                SlowDown();
             }
         }
 
@@ -122,13 +154,19 @@ namespace game.controllers.player
             if (!CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.IsTrickZone))
             {
                 transform.position = new Vector3(transform.position.x - _crashedDistance, transform.position.y, transform.position.z);
-                ResetRunningState();
-                ResetJumpState();
                 TryResetState(PlayerStates.IsStopZone);
                 TrySetState(PlayerStates.CrashedJump);
                 TakeLivesValue();
                 TryEventInvoke(Crashed);
+                SlowDown();
             }
+        }
+
+        private void SlowDown()
+        {
+            _currentSpeed = _startSpeed;
+            _timePreviousSpeedIncrease = ControllerManager.Timer;
+            TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
         }
 
         private void TakeLivesValue()
@@ -175,12 +213,11 @@ namespace game.controllers.player
         {
             _currentSpeed = speed;
         }
-        int i = 0;
+
         private void TrySetState(string currentState)
         {
             if (!CheckForState(currentState))
             _states.Add(currentState);
-            i++;
         }
 
         private void TryResetState(string currentState)
@@ -222,7 +259,15 @@ namespace game.controllers.player
         {
             TryEventInvoke(ResetRunning);
             TryEventInvoke(StartedIdle);
+            ResetSlideState();
+            ResetJumpState();
             _states.Clear();
+        }
+
+        private void AddLives ()
+        {
+            _lives ++;
+            TryEventInvoke(ValueLivesChanged, _lives);
         }
 
         private void AddGold(int value)
@@ -241,10 +286,15 @@ namespace game.controllers.player
 
         public void TrySetSlideState()
         {
-            if (CheckForState(PlayerStates.IsRun))
+            if (CheckForState(PlayerStates.IsRun) && ControllerManager.Timer >= _coolDownSlide + _timePreviousSlide)
             {
                 TrySetState(PlayerStates.Slide);
                 TryEventInvoke(StartedSlide);
+                _timePreviousSlide = ControllerManager.Timer;
+            }
+            else if (ControllerManager.Timer < _coolDownSlide + _timePreviousSlide)
+            {
+                _fatigueEffect.Play();
             }
         }
 
@@ -256,15 +306,20 @@ namespace game.controllers.player
 
         public void SetJumpingState()
         {
-            if (_currentValueJump < _maxJump && !CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.CrashedJump) && !CheckForState(PlayerStates.DeathByObstacle) && _states.Count <= 1)
+            if (ControllerManager.Timer >= _coolDownJump + _timePreviousJump && _currentValueJump < _maxJump && !CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.CrashedJump) && !CheckForState(PlayerStates.DeathByObstacle) && _states.Count <= 1)
             {
                 TrySetState(PlayerStates.IsJump);
                 TryEventInvoke(StartedJumping);
                 _currentValueJump ++;
+                _timePreviousJump = ControllerManager.Timer;
             }
-            else if (CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.IsStopZone))
+            else if (ControllerManager.Timer >= _coolDownJump + _timePreviousJump && CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.IsStopZone) && !CheckForState(PlayerStates.Slide))
             {
                 TrySetState(PlayerStates.JumpObstacle);
+            }
+            else if (ControllerManager.Timer <= _coolDownJump + _timePreviousJump)
+            {
+                _fatigueEffect.Play();
             }
         }
 
@@ -279,10 +334,15 @@ namespace game.controllers.player
 
         public void SetHitState()
         {
-            if (_states.Count <= 1 && CheckForState(PlayerStates.IsRun))
+            if (_states.Count <= 1 && CheckForState(PlayerStates.IsRun) && ControllerManager.Timer >= _coolDownHit + _timePreviousHit)
             {
                 TrySetState(PlayerStates.Hit);
                 TryEventInvoke(StartedHit);
+                _timePreviousHit = ControllerManager.Timer;
+            }
+            else if (ControllerManager.Timer < _coolDownHit + _timePreviousHit)
+            {
+                _fatigueEffect.Play();
             }
         }
 
@@ -297,8 +357,15 @@ namespace game.controllers.player
             TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
             TryEventInvoke(ValueFragChanged, _fragValue);
 
-            _trickEffect = CreateObject($"{Path.PREFABS_EFFECTS}TrickZoneEffect");
+            _trickEffect = CreateObject($"{Path.PREFABS_EFFECTS}{ObjectNames.TrickZoneEffect}");
             _trickEffect.SetActive(false);
+            _fatigueEffect = CreateObject($"{Path.PREFABS_EFFECTS}{ObjectNames.LightningEffect}").GetComponent<ParticleSystem>();
+            _trickEffect.SetActive(false);
+
+            _timePreviousJump = -_coolDownJump;
+            _timePreviousHit = -_coolDownHit;
+            _timePreviousSlide = -_coolDownSlide;
+
             Resources.UnloadUnusedAssets();
         }
 
@@ -309,9 +376,9 @@ namespace game.controllers.player
 
         public void ResetPlayer()
         {
-            _states.Clear();
-            TryEventInvoke(StartedIdle);
-            _lives = 1;
+            SetIdleState();
+            TryEventInvoke(ResetRunning);
+            _lives = 2;
             TryEventInvoke(ValueLivesChanged, _lives);
         }
     }

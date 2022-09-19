@@ -24,5 +24,16 @@ namespace dictionaries
         public static readonly string LiveCounter = "LiveCounter";
         public static readonly string AttackBox = "AttackBox";
         public static readonly string FullTable = "FullTable";
+        public static readonly string Table = "Table";
+        public static readonly string Crate = "Crate";
+        public static readonly string Box = "Box";
+        public static readonly string Trunk = "Trunk";
+        public static readonly string ButtonRestart = "ButtonRestart";
+        public static readonly string HealingChest = "HealingChest";
+        public static readonly string TrickZoneEffect = "TrickZoneEffect";
+        public static readonly string LightningEffect = "LightningEffect";
+        public static readonly string Furnace = "Furnace";
+        public static readonly string FishBox = "FishBox";
+        public static readonly string TableWithArmor = "TableWithArmor";
     }
 }

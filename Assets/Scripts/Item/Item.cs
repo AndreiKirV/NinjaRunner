@@ -23,7 +23,7 @@ namespace game.item
         private void OnTriggerEnter2D(Collider2D other) 
         {
             TryAddListener(other);
-            TryCrush(other);  
+            TryCrush(other);
         }
 
         protected virtual void TryAddListener(Collider2D other)
