@@ -35,5 +35,15 @@ namespace dictionaries
         public static readonly string Furnace = "Furnace";
         public static readonly string FishBox = "FishBox";
         public static readonly string TableWithArmor = "TableWithArmor";
+        public static readonly string Golem = "Golem";
+        public static readonly string Minotaur ="Minotaur";
+        public static readonly string Weapon ="Weapon";
+        public static readonly string Enemy = "Enemy";
+        public static readonly string Character = "Character";
+        public static readonly string Head = "Head";
+        public static readonly string RightArm = "RightArm";
+        public static readonly string LeftArm = "LeftArm";
+        public static readonly string RightHand = "RightHand";
+        public static readonly string LeftHand = "LeftHand";
     }
 }

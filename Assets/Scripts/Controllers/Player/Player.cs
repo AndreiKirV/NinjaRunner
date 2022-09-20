@@ -25,7 +25,7 @@ namespace game.controllers.player
         private float _timePreviousHit = 0;
         private float _timePreviousSlide = 0;
         private float _coolDownJump = 1.5f;
-        private float _coolDownHit = 4;
+        private float _coolDownHit = 3;
         private float _coolDownSlide = 2.5f;
         private float _slideTime = 2;
         private float _timePreviousSpeedIncrease = 0;
@@ -70,13 +70,12 @@ namespace game.controllers.player
                 ResetSlideState();
             }
 
-            if (_currentSpeed < _maxSpeed && ControllerManager.Timer >= _stepSpeedIncrease + _timePreviousSpeedIncrease)
+            if (!CheckForState(PlayerStates.DeathByObstacle) && _currentSpeed < _maxSpeed && ControllerManager.Timer >= _stepSpeedIncrease + _timePreviousSpeedIncrease)
             {
                 _currentSpeed += _stepSpeed;
                 TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
                 _timePreviousSpeedIncrease = ControllerManager.Timer;
             }
-
         }
 
         private void OnCollisionEnter2D (Collision2D other) 
@@ -92,7 +91,7 @@ namespace game.controllers.player
                 _trickEffect.SetActive(true);
             }
 
-            if (other.gameObject.name == ObjectNames.StopZone && !_attackBox.activeSelf)
+            if ((other.gameObject.name == ObjectNames.StopZone || other.gameObject.name == ObjectNames.AttackBox)&& !_attackBox.activeSelf)
             {
                 ResetRunningState();
                 ResetHitState();
@@ -108,11 +107,11 @@ namespace game.controllers.player
                 }
             }
 
-            if (!CheckForState(PlayerStates.Hit) && other.gameObject.name != ObjectNames.Ground && other.gameObject.transform.parent.TryGetComponent<Trunk>(out Trunk trunk))
+            if (!CheckForState(PlayerStates.Hit) && other.gameObject.name == ObjectNames.TrickZone && other.gameObject.transform.parent.TryGetComponent<Trunk>(out Trunk trunk))
             {
                 trunk.AddListenerEvent(AddGold);
             }
-            else if (!CheckForState(PlayerStates.Hit) && other.gameObject.name != ObjectNames.Ground && other.gameObject.transform.parent.TryGetComponent<HealingChest>(out HealingChest healingChest))
+            else if (!CheckForState(PlayerStates.Hit) && other.gameObject.name == ObjectNames.TrickZone && other.gameObject.transform.parent.TryGetComponent<HealingChest>(out HealingChest healingChest))
             {
                 healingChest.AddListenerEvent(AddLives);
             }
