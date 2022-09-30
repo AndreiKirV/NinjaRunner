@@ -10,6 +10,7 @@ namespace game.controllers.enemy
         private List<SpriteRenderer> _bones = new List<SpriteRenderer>();
         private List<string> _path = new List<string>();
         private List<GameObject> _bodyParts = new List<GameObject>();
+        private SpriteRenderer _bullet = new SpriteRenderer();
 
         private void InitBodyParts(List<SpriteRenderer> bones)
         {
@@ -33,6 +34,11 @@ namespace game.controllers.enemy
             return _bodyParts[Random.Range(0, _bodyParts.Count)];
         }
 
+        public SpriteRenderer GiveBullet()
+        {
+            return _bullet;
+        }
+
         public void InitMeleeEnemy()
         {
             _path.Add($"{Path.ENEMY_VIEW}{ObjectNames.Golem}1");
@@ -41,6 +47,13 @@ namespace game.controllers.enemy
             _path.Add($"{Path.ENEMY_VIEW}{ObjectNames.Minotaur}1");
             _path.Add($"{Path.ENEMY_VIEW}{ObjectNames.Minotaur}2");
             _path.Add($"{Path.ENEMY_VIEW}{ObjectNames.Minotaur}3");
+        }
+
+        public void InitRangedEnemy()
+        {
+            _path.Add($"{Path.ENEMY_VIEW}{ObjectNames.Wraith}1");
+            _path.Add($"{Path.ENEMY_VIEW}{ObjectNames.Wraith}2");
+            _path.Add($"{Path.ENEMY_VIEW}{ObjectNames.Wraith}3");
         }
 
         public void SetSprites()
@@ -55,6 +68,11 @@ namespace game.controllers.enemy
                     item.sprite = Resources.Load<Sprite>($"{tempPath}/{tempName}");
                 else
                     item.sprite = Resources.Load<Sprite>($"{_path[Random.Range(0, _path.Count)]}/{tempName}");
+
+                if (tempName == ObjectNames.Bullet)
+                {
+                    _bullet = item;
+                }
             }
 
             Resources.UnloadUnusedAssets();

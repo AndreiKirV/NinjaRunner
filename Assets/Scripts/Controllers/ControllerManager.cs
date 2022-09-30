@@ -48,6 +48,7 @@ namespace game.controllers
             _groundController.PositionChanged.AddListener(_spawnController.CreateIItem);
             _groundController.Init();
 
+            _spawnController.SetPlayer(_player.GetComponent<Player>());
             _spawnController.Init();
         }
 

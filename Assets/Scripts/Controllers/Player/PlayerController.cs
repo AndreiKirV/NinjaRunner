@@ -65,7 +65,7 @@ namespace game.controllers.player
             _player.StartedSlide.AddListener(_animationController.Slide);
             _player.ResetSlide.AddListener(_animationController.StopSlide);
             _player.StartedIdle.AddListener(_animationController.StopDeath);
-            //_player.ResetJumping.AddListener(_animationController.StopJump);
+            _player.StartTrickDeath.AddListener(_animationController.StartTrickDeath);
             _player.ResetJumping.AddListener(delegate() {_animationController.ChangeFlag(PlayerStates.IsJump, false);});
             _player.ResetHit.AddListener(delegate() {_animationController.ChangeFlag(PlayerStates.Hit, false);});
             _player.Init();

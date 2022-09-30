@@ -3,6 +3,7 @@ namespace game.controllers.enemy
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
+    using dictionaries;
 
     public class EnemyAnimationController
     {
@@ -20,6 +21,16 @@ namespace game.controllers.enemy
         public void StartDeath()
         {
             _animator.SetTrigger("Death");
+        }
+
+        public void StartEscape()
+        {
+            _animator.SetTrigger("Escape");
+        }
+
+        public void StartTrickDeath(int value)
+        {
+            _animator.SetTrigger($"{PlayerStates.TrickDeath}{value}");
         }
     }
 }

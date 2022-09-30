@@ -45,5 +45,8 @@ namespace dictionaries
         public static readonly string LeftArm = "LeftArm";
         public static readonly string RightHand = "RightHand";
         public static readonly string LeftHand = "LeftHand";
+        public static readonly string EnemyRanged = "EnemyRanged";
+        public static readonly string Bullet = "Bullet";
+        public static readonly string Wraith = "Wraith";
     }
 }

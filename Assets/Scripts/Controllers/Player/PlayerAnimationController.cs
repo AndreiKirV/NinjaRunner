@@ -106,6 +106,11 @@ namespace game.controllers.player
         {
             ChangeFlag(_currentDeathByObstacle,false);
         }
+        
+        public void StartTrickDeath(int value)
+        {
+            _animator.SetTrigger($"{PlayerStates.TrickDeath}{value}");
+        }
 
         public void Init()
         {
