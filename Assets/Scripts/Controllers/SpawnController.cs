@@ -21,7 +21,7 @@ namespace game.controllers
         }
 
         public void Init()
-        {/*
+        {
             Add($"{Path.DECOR}{ObjectNames.Trunk}", ObjectNames.Trunk);
             Add($"{Path.DECOR}{ObjectNames.HealingChest}", ObjectNames.HealingChest);
             Add($"{Path.DECOR}{ObjectNames.Box}", ObjectNames.JumpingObstacle);
@@ -34,7 +34,7 @@ namespace game.controllers
             
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.Enemy}", ObjectNames.Enemy);
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.Enemy}", ObjectNames.Enemy);
-*/
+            
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.EnemyRanged}", ObjectNames.EnemyRanged);
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.EnemyRanged}", ObjectNames.EnemyRanged);
         }

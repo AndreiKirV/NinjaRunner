@@ -36,7 +36,6 @@ namespace game.controllers
             _playerController.SetButtonHit(_uIController.GiveButton(ObjectNames.ButtonAttack));
             _playerController.SetButtonSlide(_uIController.GiveButton(ObjectNames.ButtonSlide));
             _playerController.SetEventResetRunning(_uIController.EnableButtonRun);
-            _playerController.SetButtonRestart(_uIController.GiveButton(ObjectNames.ButtonRestart));
             _playerController.Init();
 
             _backgroundController.SetOffset(4, 1);

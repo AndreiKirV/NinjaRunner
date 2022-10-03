@@ -10,7 +10,7 @@ namespace game.controllers.player
     public class Player : MonoBehaviour
     {
         private int _gold = 0;
-        private int _lives = 5;
+        private int _lives = 2;
         private int _trickValue = 0;
         private int _fragValue = 0;
         private int _maxJump = 1;
@@ -58,12 +58,20 @@ namespace game.controllers.player
         public UnityEvent DeathByObstacle = new UnityEvent();
         public UnityEvent <int> StartTrickDeath = new UnityEvent <int> ();
 
+        public static UnityEvent Death;
+        public static UnityEvent ResPlayer;
         public static UnityEvent<int> ValueTrickChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueLivesChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueGoldChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueFragChanged = new UnityEvent<int>();
         public static UnityEvent<float> ValueCurrentSpeedChanged = new UnityEvent<float>();
 
+        private void Awake() 
+        {
+            Death = new UnityEvent();
+            ResPlayer = new UnityEvent();
+            ResPlayer.AddListener(ResetPlayer);
+        }
         private void Update() 
         {
             if (CheckForState(PlayerStates.Slide) && _timePreviousSlide + _slideTime <= ControllerManager.Timer)
@@ -71,7 +79,7 @@ namespace game.controllers.player
                 ResetSlideState();
             }
 
-            if (!CheckForState(PlayerStates.DeathByObstacle) && _currentSpeed < _maxSpeed && ControllerManager.Timer >= _stepSpeedIncrease + _timePreviousSpeedIncrease)
+            if (CheckForState(PlayerStates.IsRun) && _currentSpeed < _maxSpeed && ControllerManager.Timer >= _stepSpeedIncrease + _timePreviousSpeedIncrease)
             {
                 _currentSpeed += _stepSpeed;
                 TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
@@ -94,18 +102,7 @@ namespace game.controllers.player
 
             if ((other.gameObject.name == ObjectNames.StopZone || other.gameObject.name == ObjectNames.AttackBox) && !_attackBox.activeSelf)
             {
-                ResetRunningState();
-                ResetHitState();
-                TrySetState(PlayerStates.IsStopZone);
-
-                if (_lives <= 1)
-                {
-                    TryStartedDeath();
-                }
-                else if (_lives > 1)
-                {
-                    TryStartedCrashed();
-                }
+                TryStartedClash();
             }
 
             if (!CheckForState(PlayerStates.Hit) && other.gameObject.name == ObjectNames.TrickZone && other.gameObject.transform.parent.TryGetComponent<Trunk>(out Trunk trunk))
@@ -116,6 +113,11 @@ namespace game.controllers.player
             {
                 healingChest.AddListenerEvent(AddLives);
             }
+        }
+
+        private void TryDeath()
+        {
+            Death.Invoke();
         }
 
         private void OnTriggerExit2D(Collider2D other) 

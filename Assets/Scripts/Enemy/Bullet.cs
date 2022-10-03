@@ -10,7 +10,7 @@ namespace game.enemy
     public class Bullet : MonoBehaviour
     {
         [SerializeField] Animator _animator;
-        private float _speed = 65;
+        private float _speed = 55;
         private bool _rebounded = false;
         public UnityEvent <GameObject> Destroyed = new UnityEvent<GameObject>();
 

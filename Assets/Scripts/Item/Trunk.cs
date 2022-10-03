@@ -14,8 +14,8 @@ namespace game.item
         private UnityAction<int> [] _events = new UnityAction<int>[1];
         private bool isAwardReceived = false;
         
-        private int _minPrice = 1;
-        private int _maxPrice = 5;
+        private int _minPrice = 2;
+        private int _maxPrice = 10;
 
         protected override void StartAnimatingSuccessfulTrick()
         {

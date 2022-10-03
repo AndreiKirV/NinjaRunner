@@ -8,6 +8,7 @@ namespace game.controllers
     using UnityEngine.Events;
     using TMPro;
     using game.controllers.player;
+    using UnityEngine.SceneManagement;
 
     public class UIController
     {
@@ -29,7 +30,9 @@ namespace game.controllers
             CreatePrefabUI(ObjectNames.ButtonSlide).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonJump).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonAttack).SetActive(false);
-            CreatePrefabUI(ObjectNames.ButtonRestart);
+            CreatePrefabUI(ObjectNames.ButtonMenu).SetActive(true);
+            CreateMenu();
+            MenuInit();
 
             CreateCounters();
 
@@ -41,6 +44,11 @@ namespace game.controllers
             Player.ValueCurrentSpeedChanged.AddListener(ChangeSpeedValue);
             Player.ValueFragChanged.AddListener(ChangeFragValue);
 
+            GiveButton(ObjectNames.ButtonMenu).onClick.AddListener(delegate {
+                ChangeActivityUI(ObjectNames.Panel);
+                Time.timeScale = 0;
+            });
+
             Resources.UnloadUnusedAssets();
         }
 
@@ -50,6 +58,59 @@ namespace game.controllers
             ChangeActivityUI(ObjectNames.ButtonSlide);
             ChangeActivityUI(ObjectNames.ButtonJump);
             ChangeActivityUI(ObjectNames.ButtonAttack);
+        }
+
+        private void MenuInit()
+        {
+            GiveButton($"{ObjectNames.Button}Continue").onClick.AddListener(delegate {
+                ChangeActivityUI(ObjectNames.Panel);
+                Time.timeScale = 1;});
+
+            GiveButton($"{ObjectNames.Button}Restart").onClick.AddListener(delegate {
+                ChangeActivityUI(ObjectNames.Panel);
+                Time.timeScale = 1;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);});
+                
+            GiveButton($"{ObjectNames.Button}Shop").onClick.AddListener(delegate {});
+            GiveButton($"{ObjectNames.Button}Exit").onClick.AddListener(delegate {Application.Quit();});
+
+            GiveButton(ObjectNames.ButtonResetPlayer).onClick.AddListener(delegate {
+                Player.ResPlayer.Invoke();
+            });
+
+            Player.Death.AddListener(delegate {
+                Time.timeScale = 0;
+                ChangeActivityUI(ObjectNames.Panel);});
+        }
+
+        private void CreateMenu()
+        {
+            CreatePrefabUI(ObjectNames.Panel).SetActive(false);
+            CreateButtonMenu("Continue");
+            CreateButtonMenu("Restart");
+            CreateButtonMenu("Shop");
+            CreateButtonMenu("Exit");
+            CreateButton(ObjectNames.ButtonResetPlayer, "ButtonContinue");
+
+            float with = _canvas.gameObject.GetComponent<CanvasScaler>().referenceResolution.x;
+            float height = _canvas.gameObject.GetComponent<CanvasScaler>().referenceResolution.y / 5;
+            _elements[ObjectNames.Panel].GetComponent<GridLayoutGroup>().cellSize = new Vector2(with, height);
+        }
+
+        private void CreateButtonMenu(string name)
+        {
+            GameObject tempButton = CreatePrefabUI(ObjectNames.Button, $"{ObjectNames.Button}{name}");
+            tempButton.SetActive(true);
+            tempButton.name = name;
+            tempButton.transform.SetParent(_elements[ObjectNames.Panel].transform);
+            tempButton.GetComponentInChildren<TextMeshProUGUI>().text = name;
+        }
+
+        private void CreateButton(string name, string parent)
+        {
+            GameObject tempButton = CreatePrefabUI(name, name, _elements[parent]);
+            tempButton.SetActive(true);
+            tempButton.name = name;
         }
 
         private void ChangeFragValue(int value)
@@ -124,6 +185,33 @@ namespace game.controllers
             return tempObject;
         }
 
+        private GameObject CreatePrefabUI(string objectName, string targetName)
+        {
+            GameObject tempObject;
+            GameObject targetObject = Resources.Load<GameObject>($"{Path.PREFABS_UI}{objectName}");
+
+            if (targetObject.name != ObjectNames.Canvas)
+                tempObject = GameMain.InstantiateObject(targetObject, _elements[ObjectNames.Canvas].transform);
+            else
+                tempObject = GameMain.InstantiateObject(targetObject);
+
+            tempObject.name = targetName;
+            _elements.Add(tempObject.name, tempObject);
+            return tempObject;
+        }
+
+        private GameObject CreatePrefabUI(string objectName, string targetName, GameObject parent)
+        {
+            GameObject tempObject;
+            GameObject targetObject = Resources.Load<GameObject>($"{Path.PREFABS_UI}{objectName}");
+            
+            tempObject = GameMain.Instantiate(targetObject, parent.transform);
+
+            tempObject.name = targetName;
+            _elements.Add(tempObject.name, tempObject);
+            return tempObject;
+        }
+
         private void CreateCanvas()
         {
             GameObject canvas = CreatePrefabUI(ObjectNames.Canvas);
@@ -148,10 +236,13 @@ namespace game.controllers
 
         private void DisableButtonRun()
         {
-            ChangeActivityUI(ObjectNames.ButtonStartRunning);
-            ChangeActivityUI(ObjectNames.ButtonSlide);
-            ChangeActivityUI(ObjectNames.ButtonJump);
-            ChangeActivityUI(ObjectNames.ButtonAttack);
+            if (int.Parse(_counters[ObjectNames.LiveCounter].text) > 0)
+            {
+                ChangeActivityUI(ObjectNames.ButtonStartRunning);
+                ChangeActivityUI(ObjectNames.ButtonSlide);
+                ChangeActivityUI(ObjectNames.ButtonJump);
+                ChangeActivityUI(ObjectNames.ButtonAttack);
+            }
         }
     }
 }

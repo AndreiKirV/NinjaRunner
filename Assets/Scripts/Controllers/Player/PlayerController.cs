@@ -42,11 +42,6 @@ namespace game.controllers.player
             button.onClick.AddListener(_player.TrySetSlideState);
         }
 
-        public void SetButtonRestart(Button button)
-        {
-        button.onClick.AddListener(_player.ResetPlayer);
-        }
-
         public void SetEventResetRunning(UnityEngine.Events.UnityAction call)
         {
             _player.ResetRunning.AddListener(call);

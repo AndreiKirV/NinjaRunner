@@ -28,7 +28,6 @@ namespace dictionaries
         public static readonly string Crate = "Crate";
         public static readonly string Box = "Box";
         public static readonly string Trunk = "Trunk";
-        public static readonly string ButtonRestart = "ButtonRestart";
         public static readonly string HealingChest = "HealingChest";
         public static readonly string TrickZoneEffect = "TrickZoneEffect";
         public static readonly string LightningEffect = "LightningEffect";
@@ -48,5 +47,9 @@ namespace dictionaries
         public static readonly string EnemyRanged = "EnemyRanged";
         public static readonly string Bullet = "Bullet";
         public static readonly string Wraith = "Wraith";
+        public static readonly string Panel = "Panel";
+        public static readonly string Button = "Button";
+        public static readonly string ButtonMenu = "ButtonMenu";
+        public static readonly string ButtonResetPlayer = "ButtonResetPlayer";
     }
 }
