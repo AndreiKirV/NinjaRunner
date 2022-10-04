@@ -22,6 +22,11 @@ namespace game.controllers.player
             _player = _playerObject.AddComponent<Player>();
         }
 
+        public int GiveWallet()
+        {
+            return _player.Gold;
+        }
+
         public void SetButtonRun(Button button)
         {
             button.onClick.AddListener(_player.SetRunningState);

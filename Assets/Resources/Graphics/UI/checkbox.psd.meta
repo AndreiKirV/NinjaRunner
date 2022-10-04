@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 850e4d5571410cc4c86c04b4e229a3f8
+guid: ffb099024d6e8bb439647a78ea7a36cd
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -154,13 +154,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 41_0
+      name: checkbox_0
       rect:
         serializedVersion: 2
-        x: 29
-        y: 7
-        width: 342
-        height: 102
+        x: 16
+        y: 16
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -168,8 +168,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8ec76ec99d724ee479dc4466c73df081
-      internalID: -335666370
+      spriteID: ecc613c388f3211409f0ac49f76cdd11
+      internalID: -472349055
       vertices: []
       indices: 
       edges: []
@@ -185,7 +185,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      41_0: -335666370
+      checkbox_0: -472349055
   spritePackingTag: 
   pSDRemoveMatte: 0
   userData: 

@@ -6,6 +6,7 @@ namespace game.controllers.player
     using UnityEngine.Events;
     using dictionaries;
     using game.item;
+    using game.controllers.shop;
 
     public class Player : MonoBehaviour
     {
@@ -34,6 +35,7 @@ namespace game.controllers.player
         private GameObject _trickEffect;
         private GameObject _attackBox;
         private ParticleSystem _fatigueEffect;
+        private SpriteRenderer _weapon = new SpriteRenderer();
 
         private List<string> _states = new List<string>();
 
@@ -71,7 +73,15 @@ namespace game.controllers.player
             Death = new UnityEvent();
             ResPlayer = new UnityEvent();
             ResPlayer.AddListener(ResetPlayer);
+            _weapon = gameObject.transform.Find(ObjectNames.Body).transform.Find(ObjectNames.Sword).gameObject.GetComponent<SpriteRenderer>();
+            ShopController.WeaponsPurchased.AddListener(ChangeWeapon);
         }
+
+        private void ChangeWeapon(Sprite sprite)
+        {
+            _weapon.sprite = sprite;
+        }
+
         private void Update() 
         {
             if (CheckForState(PlayerStates.Slide) && _timePreviousSlide + _slideTime <= ControllerManager.Timer)

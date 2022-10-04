@@ -16,6 +16,6 @@ namespace dictionaries
         public static readonly string PREFABS_EFFECTS = $"{PREFABS}Effects/";
         public static readonly string PREFABS_ENEMIES = $"{PREFABS}Enemies/";
         public static readonly string ENEMY_VIEW = $"Graphics/Enemies/";
-
+        public static readonly string WEAPON = $"Graphics/Character/Weapons/"; 
     }
 }

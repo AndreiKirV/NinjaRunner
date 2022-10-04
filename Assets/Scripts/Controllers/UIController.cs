@@ -14,7 +14,6 @@ namespace game.controllers
     {
         private Camera _camera;
         private Canvas _canvas;
-        private bool _isGameActive = true;
         private Dictionary<string, GameObject> _elements = new Dictionary<string, GameObject>();
         private Dictionary<string, TextMeshProUGUI> _counters = new Dictionary<string, TextMeshProUGUI>();
 
@@ -205,7 +204,7 @@ namespace game.controllers
             GameObject tempObject;
             GameObject targetObject = Resources.Load<GameObject>($"{Path.PREFABS_UI}{objectName}");
             
-            tempObject = GameMain.Instantiate(targetObject, parent.transform);
+            tempObject = GameMain.InstantiateObject(targetObject, parent.transform);
 
             tempObject.name = targetName;
             _elements.Add(tempObject.name, tempObject);
@@ -227,6 +226,11 @@ namespace game.controllers
                 tempObject = _elements[targetUI];
 
             return tempObject;
+        }
+
+        public Canvas GiveCanvas()
+        {
+            return _canvas;
         }
 
         private void ChangeActivityUI(string targetObject)

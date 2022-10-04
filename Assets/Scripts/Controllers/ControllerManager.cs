@@ -6,6 +6,7 @@ namespace game.controllers
     using game.controllers.player;
     using UnityEngine.UI;
     using dictionaries;
+    using game.controllers.shop;
 
     public class ControllerManager
     {
@@ -16,6 +17,7 @@ namespace game.controllers
         private GroundController _groundController = new GroundController();
         private PlayerController _playerController = new PlayerController();
         private SpawnController _spawnController = new SpawnController();
+        private ShopController _shop = new ShopController();
         private UIController _uIController;
         public static float Timer = 0;
 
@@ -49,6 +51,10 @@ namespace game.controllers
 
             _spawnController.SetPlayer(_player.GetComponent<Player>());
             _spawnController.Init();
+
+            _shop.SetCanvas(_uIController.GiveCanvas());
+            _shop.MoneyRequest += _playerController.GiveWallet;
+            _shop.Init();
         }
 
         public void Start()
