@@ -55,5 +55,6 @@ namespace dictionaries
         public static readonly string Product = "Product";
         public static readonly string Body = "Body";
         public static readonly string Sword = "Sword";
+        public static readonly string ButtonExit = "ButtonExit";
     }
 }

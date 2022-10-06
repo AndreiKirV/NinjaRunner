@@ -14,6 +14,7 @@ namespace game.controllers.shop
         private GameObject _shopView;
         private GridLayoutGroup _groupView;
         public static UnityEvent <Sprite> WeaponsPurchased = new UnityEvent <Sprite>();
+        public static UnityEvent OpenShop = new UnityEvent();
         public delegate int IntInput();
         public IntInput MoneyRequest;
 
@@ -91,6 +92,9 @@ namespace game.controllers.shop
             _shopView.gameObject.SetActive(false);
             _groupView = _shopView.GetComponentInChildren<GridLayoutGroup>();
             CreateCells();
+
+            OpenShop.AddListener(SetUpStore);
+            _shopView.transform.Find(ObjectNames.ButtonExit).GetComponentInChildren<Button>().onClick.AddListener(SetUpStore);
         }
 
         private void GiveWeapon(Product targetProduct)
@@ -99,6 +103,11 @@ namespace game.controllers.shop
             {
                 WeaponsPurchased.Invoke(targetProduct.Weapon);
             }
+        }
+
+        private void SetUpStore()
+        {
+            _shopView.SetActive(!_shopView.activeSelf);
         }
     }
 }

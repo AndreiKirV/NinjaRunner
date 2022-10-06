@@ -9,6 +9,7 @@ namespace game.controllers
     using TMPro;
     using game.controllers.player;
     using UnityEngine.SceneManagement;
+    using game.controllers.shop;
 
     public class UIController
     {
@@ -70,7 +71,7 @@ namespace game.controllers
                 Time.timeScale = 1;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);});
                 
-            GiveButton($"{ObjectNames.Button}Shop").onClick.AddListener(delegate {});
+            GiveButton($"{ObjectNames.Button}Shop").onClick.AddListener(delegate {ShopController.OpenShop.Invoke();});
             GiveButton($"{ObjectNames.Button}Exit").onClick.AddListener(delegate {Application.Quit();});
 
             GiveButton(ObjectNames.ButtonResetPlayer).onClick.AddListener(delegate {

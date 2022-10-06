@@ -51,7 +51,7 @@ namespace game.controllers
 
             _spawnController.SetPlayer(_player.GetComponent<Player>());
             _spawnController.Init();
-
+            
             _shop.SetCanvas(_uIController.GiveCanvas());
             _shop.MoneyRequest += _playerController.GiveWallet;
             _shop.Init();
