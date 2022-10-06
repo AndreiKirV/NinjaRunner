@@ -383,8 +383,8 @@ namespace game.controllers.player
             TryEventInvoke(ValueTrickChanged, _trickValue);
             TryEventInvoke(ValueLivesChanged, _lives);
             TryEventInvoke(ValueGoldChanged, _gold);
-            TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
             TryEventInvoke(ValueFragChanged, _fragValue);
+            TryEventInvoke(ValueCurrentSpeedChanged, _currentSpeed);
 
             _trickEffect = CreateObject($"{Path.PREFABS_EFFECTS}{ObjectNames.TrickZoneEffect}");
             _trickEffect.SetActive(false);

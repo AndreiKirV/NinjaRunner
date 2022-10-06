@@ -25,25 +25,27 @@ namespace game.controllers
 
         public void Init()
         {
-            CreateCanvas();
+           
+            CreateCanvas(); 
             CreatePrefabUI(ObjectNames.ButtonStartRunning);
             CreatePrefabUI(ObjectNames.ButtonSlide).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonJump).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonAttack).SetActive(false);
             CreatePrefabUI(ObjectNames.ButtonMenu).SetActive(true);
-            CreateMenu();
-            MenuInit();
-
-            CreateCounters();
-
+            
             _elements[ObjectNames.ButtonStartRunning].GetComponent<Button>().onClick.AddListener(DisableButtonRun);
 
             Player.ValueTrickChanged.AddListener(ChangeTrickValue);
             Player.ValueLivesChanged.AddListener(ChangeLivesValue);
             Player.ValueGoldChanged.AddListener(ChangeGoldValue);
-            Player.ValueCurrentSpeedChanged.AddListener(ChangeSpeedValue);
             Player.ValueFragChanged.AddListener(ChangeFragValue);
+            //Player.ValueCurrentSpeedChanged.AddListener(ChangeSpeedValue);
+            
+            CreateMenu();
+            //MenuInit();
 
+            CreateCounters();
+            
             GiveButton(ObjectNames.ButtonMenu).onClick.AddListener(delegate {
                 ChangeActivityUI(ObjectNames.Panel);
                 Time.timeScale = 0;

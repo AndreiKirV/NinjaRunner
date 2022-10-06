@@ -31,7 +31,7 @@ namespace game.controllers
         {
             _uIController = new UIController(_camera);
             _uIController.Init();
-
+            
             _playerController.SetPlayer(_player);
             _playerController.SetButtonRun(_uIController.GiveButton(ObjectNames.ButtonStartRunning));
             _playerController.SetButtonJump(_uIController.GiveButton(ObjectNames.ButtonJump));
