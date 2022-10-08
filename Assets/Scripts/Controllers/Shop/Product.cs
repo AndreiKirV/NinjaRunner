@@ -38,10 +38,14 @@ namespace game.controllers.shop
             {
                 _priceText = _view.GetComponentInChildren<TextMeshProUGUI>();
                 _priceText.text = "V";
+                _price = 0;
             }
 
             _button = _view.GetComponentInChildren<Button>();
-            _button.onClick.AddListener(delegate {WeaponsSelected.Invoke(this);});
+            _button.onClick.AddListener(delegate {
+                WeaponsSelected.Invoke(this);
+
+                });
         }
 
         public void SetSprite(Sprite sprite)

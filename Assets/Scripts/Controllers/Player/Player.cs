@@ -10,15 +10,16 @@ namespace game.controllers.player
 
     public class Player : MonoBehaviour
     {
-        private int _gold = 0;
+        private int _gold = 1500;
         private int _lives = 2;
         private int _trickValue = 0;
         private int _fragValue = 0;
         private int _maxJump = 1;
         private int _currentValueJump = 0;
-        private float _startSpeed = 75;
-        private float _currentSpeed;
-        private float _maxSpeed = 135;
+        private int _stepSpeed = 1;
+        private int _startSpeed = 75;
+        private int _currentSpeed;
+        private int _maxSpeed = 135;
         private float _jumpForce = 250;
         private float _trickTeleportDistance = 21;
         private float _crashedDistance = 41;
@@ -31,7 +32,6 @@ namespace game.controllers.player
         private float _slideTime = 2;
         private float _timePreviousSpeedIncrease = 0;
         private float _stepSpeedIncrease = 5;
-        private float _stepSpeed = 1;
         private GameObject _trickEffect;
         private GameObject _attackBox;
         private ParticleSystem _fatigueEffect;
@@ -40,8 +40,8 @@ namespace game.controllers.player
         private List<string> _states = new List<string>();
 
         public float JumpForce => _jumpForce;
-        public float StartSpeed => _startSpeed;
-        public float CurrentSpeed => _currentSpeed;
+        public int StartSpeed => _startSpeed;
+        public int CurrentSpeed => _currentSpeed;
         public int Gold => _gold;
         public int Lives => _lives;
 
@@ -60,17 +60,16 @@ namespace game.controllers.player
         public UnityEvent DeathByObstacle = new UnityEvent();
         public UnityEvent <int> StartTrickDeath = new UnityEvent <int> ();
 
-        public static UnityEvent Death;
+        public static UnityEvent Death= new UnityEvent();
         public static UnityEvent ResPlayer;
         public static UnityEvent<int> ValueTrickChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueLivesChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueGoldChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueFragChanged = new UnityEvent<int>();
-        public static UnityEvent<float> ValueCurrentSpeedChanged = new UnityEvent<float>();
+        public static UnityEvent<int> ValueCurrentSpeedChanged = new UnityEvent<int>();
 
         private void Awake() 
         {
-            Death = new UnityEvent();
             ResPlayer = new UnityEvent();
             ResPlayer.AddListener(ResetPlayer);
             _weapon = gameObject.transform.Find(ObjectNames.Body).transform.Find(ObjectNames.Sword).gameObject.GetComponent<SpriteRenderer>();
@@ -232,7 +231,7 @@ namespace game.controllers.player
             TryEventInvoke(ValueTrickChanged, _trickValue);
         }
 
-        private void SetCurrentSpeed(float speed)
+        private void SetCurrentSpeed(int speed)
         {
             _currentSpeed = speed;
         }
@@ -256,12 +255,6 @@ namespace game.controllers.player
         }
 
         private void TryEventInvoke(UnityEvent<int> targetEvent, int targetValue)
-        {
-            if (targetEvent != null)
-            targetEvent.Invoke(targetValue);
-        }
-
-        private void TryEventInvoke(UnityEvent<float> targetEvent, float targetValue)
         {
             if (targetEvent != null)
             targetEvent.Invoke(targetValue);
@@ -333,6 +326,11 @@ namespace game.controllers.player
             TryEventInvoke(ResetSlide);
         }
 
+        private int GiveLivesValue()
+        {
+            return _lives;
+        }
+
         public void SetJumpingState()
         {
             if (ControllerManager.Timer >= _coolDownJump + _timePreviousJump && _currentValueJump < _maxJump && !CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.CrashedJump) && !CheckForState(PlayerStates.DeathByObstacle) && _states.Count <= 1)
@@ -395,6 +393,8 @@ namespace game.controllers.player
             _timePreviousHit = -_coolDownHit;
             _timePreviousSlide = -_coolDownSlide;
 
+            UIController.LivesRequest += GiveLivesValue;
+
             Resources.UnloadUnusedAssets();
         }
 
@@ -432,6 +432,17 @@ namespace game.controllers.player
             {
                 TryStartedCrashed();
             }
+        }
+
+        public void TakeGold(int value)
+        {
+            _gold -= value;
+            TryEventInvoke(ValueGoldChanged, _gold);
+        }
+
+        public static void DeathInit()
+        {
+            Death = new UnityEvent();
         }
     }
 }

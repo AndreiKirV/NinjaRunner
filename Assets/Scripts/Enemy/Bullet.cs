@@ -26,13 +26,7 @@ namespace game.enemy
                 other.gameObject.GetComponent<EnemyRanged>().Death();
                 Ruin();
             }
-            else if (other.gameObject.name == ObjectNames.Bullet)
-            {
-                if (_rebounded)
-                Ruin();
-                else
-                ReverseDirection();
-            }
+            
         }
 
         private void Start() 
@@ -47,14 +41,22 @@ namespace game.enemy
                 _speed = -other.gameObject.transform.parent.GetComponent<Player>().CurrentSpeed - _speed;
                 _rebounded = true;
             }
+            else if (other.gameObject.name == ObjectNames.Bullet)
+            {
+                if (_rebounded)
+                {
+                    Ruin();
+                    other.gameObject.GetComponent<Bullet>().ReverseDirection();
+                }                
+            }
         }
 
         private void Update() 
         {
-            transform.position = Vector2.Lerp(transform.position, new Vector2(transform.position.x - _speed, transform.position.y), Time.deltaTime);
+            transform.position = Vector2.Lerp(transform.position, new Vector2(transform.position.x - _speed, gameObject.transform.position.y), Time.deltaTime);
         }
 
-        private void ReverseDirection()
+        public void ReverseDirection()
         {
             _speed *= - 1;
         }

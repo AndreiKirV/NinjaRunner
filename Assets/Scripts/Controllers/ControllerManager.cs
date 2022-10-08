@@ -54,6 +54,7 @@ namespace game.controllers
             
             _shop.SetCanvas(_uIController.GiveCanvas());
             _shop.MoneyRequest += _playerController.GiveWallet;
+            _shop.GoldSpent += _playerController.TageGold;
             _shop.Init();
         }
 

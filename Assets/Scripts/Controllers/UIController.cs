@@ -17,72 +17,48 @@ namespace game.controllers
         private Canvas _canvas;
         private Dictionary<string, GameObject> _elements = new Dictionary<string, GameObject>();
         private Dictionary<string, TextMeshProUGUI> _counters = new Dictionary<string, TextMeshProUGUI>();
+        public delegate int IntInput();
+        public static IntInput LivesRequest;
 
         public UIController(Camera camera)
         {
             _camera = camera;
         }
 
-        public void Init()
-        {
-           
-            CreateCanvas(); 
-            CreatePrefabUI(ObjectNames.ButtonStartRunning);
-            CreatePrefabUI(ObjectNames.ButtonSlide).SetActive(false);
-            CreatePrefabUI(ObjectNames.ButtonJump).SetActive(false);
-            CreatePrefabUI(ObjectNames.ButtonAttack).SetActive(false);
-            CreatePrefabUI(ObjectNames.ButtonMenu).SetActive(true);
-            
-            _elements[ObjectNames.ButtonStartRunning].GetComponent<Button>().onClick.AddListener(DisableButtonRun);
-
-            Player.ValueTrickChanged.AddListener(ChangeTrickValue);
-            Player.ValueLivesChanged.AddListener(ChangeLivesValue);
-            Player.ValueGoldChanged.AddListener(ChangeGoldValue);
-            Player.ValueFragChanged.AddListener(ChangeFragValue);
-            //Player.ValueCurrentSpeedChanged.AddListener(ChangeSpeedValue);
-            
-            CreateMenu();
-            //MenuInit();
-
-            CreateCounters();
-            
-            GiveButton(ObjectNames.ButtonMenu).onClick.AddListener(delegate {
-                ChangeActivityUI(ObjectNames.Panel);
-                Time.timeScale = 0;
-            });
-
-            Resources.UnloadUnusedAssets();
-        }
-
-        public void EnableButtonRun()
-        {
-            ChangeActivityUI(ObjectNames.ButtonStartRunning);
-            ChangeActivityUI(ObjectNames.ButtonSlide);
-            ChangeActivityUI(ObjectNames.ButtonJump);
-            ChangeActivityUI(ObjectNames.ButtonAttack);
-        }
-
         private void MenuInit()
         {
+            
             GiveButton($"{ObjectNames.Button}Continue").onClick.AddListener(delegate {
-                ChangeActivityUI(ObjectNames.Panel);
-                Time.timeScale = 1;});
+                if (LivesRequest.Invoke() > 0)
+                {
+                    ChangeActivityUI(ObjectNames.Panel);
+                    Time.timeScale = 1;
+                }
+                });
 
             GiveButton($"{ObjectNames.Button}Restart").onClick.AddListener(delegate {
                 ChangeActivityUI(ObjectNames.Panel);
                 Time.timeScale = 1;
-                SceneManager.LoadScene(SceneManager.GetActiveScene().name);});
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+                });
                 
-            GiveButton($"{ObjectNames.Button}Shop").onClick.AddListener(delegate {ShopController.OpenShop.Invoke();});
-            GiveButton($"{ObjectNames.Button}Exit").onClick.AddListener(delegate {Application.Quit();});
+            GiveButton($"{ObjectNames.Button}Shop").onClick.AddListener(delegate {
+                ShopController.OpenShop.Invoke();
+                });
+
+            GiveButton($"{ObjectNames.Button}Exit").onClick.AddListener(delegate {
+                Application.Quit();
+                });
 
             GiveButton(ObjectNames.ButtonResetPlayer).onClick.AddListener(delegate {
                 Player.ResPlayer.Invoke();
             });
 
+            Player.DeathInit();
             Player.Death.AddListener(delegate {
                 Time.timeScale = 0;
-                ChangeActivityUI(ObjectNames.Panel);});
+                ChangeActivityUI(ObjectNames.Panel);
+                });
         }
 
         private void CreateMenu()
@@ -120,7 +96,7 @@ namespace game.controllers
             ChangeCounterValue(ObjectNames.FragCounter, value.ToString());
         }
 
-        private void ChangeSpeedValue(float value)
+        private void ChangeSpeedValue(int value)
         {
             ChangeCounterValue(ObjectNames.SpeedCounter, value.ToString());
         }
@@ -152,17 +128,6 @@ namespace game.controllers
             CreateCounter(ObjectNames.TrickCounter);
             CreateCounter(ObjectNames.FragCounter);
             CreateCounter(ObjectNames.LiveCounter);
-        }
-
-        public Button GiveButton(string targetButton)
-        {
-            Button tempButton = null;
-            GameObject tempObject = GiveUi(targetButton);
-
-            if (tempObject != null && tempObject.TryGetComponent<Button>(out Button button))
-                tempButton = button;
-
-            return tempButton;
         }
 
         private void CreateCounter(string objectName)
@@ -231,11 +196,6 @@ namespace game.controllers
             return tempObject;
         }
 
-        public Canvas GiveCanvas()
-        {
-            return _canvas;
-        }
-
         private void ChangeActivityUI(string targetObject)
         {
             _elements[targetObject].SetActive(!_elements[targetObject].activeSelf);
@@ -250,6 +210,61 @@ namespace game.controllers
                 ChangeActivityUI(ObjectNames.ButtonJump);
                 ChangeActivityUI(ObjectNames.ButtonAttack);
             }
+        }
+
+        public void Init()
+        {
+           
+            CreateCanvas(); 
+            CreatePrefabUI(ObjectNames.ButtonStartRunning);
+            CreatePrefabUI(ObjectNames.ButtonSlide).SetActive(false);
+            CreatePrefabUI(ObjectNames.ButtonJump).SetActive(false);
+            CreatePrefabUI(ObjectNames.ButtonAttack).SetActive(false);
+            CreatePrefabUI(ObjectNames.ButtonMenu).SetActive(true);
+            
+            _elements[ObjectNames.ButtonStartRunning].GetComponent<Button>().onClick.AddListener(DisableButtonRun);
+
+            Player.ValueTrickChanged.AddListener(ChangeTrickValue);
+            Player.ValueLivesChanged.AddListener(ChangeLivesValue);
+            Player.ValueGoldChanged.AddListener(ChangeGoldValue);
+            Player.ValueFragChanged.AddListener(ChangeFragValue);
+            Player.ValueCurrentSpeedChanged.AddListener(ChangeSpeedValue);
+            
+            CreateMenu();
+            MenuInit();
+
+            CreateCounters();
+            
+            GiveButton(ObjectNames.ButtonMenu).onClick.AddListener(delegate {
+                ChangeActivityUI(ObjectNames.Panel);
+                Time.timeScale = 0;
+            });
+
+            Resources.UnloadUnusedAssets();
+        }
+
+        public void EnableButtonRun()
+        {
+            ChangeActivityUI(ObjectNames.ButtonStartRunning);
+            ChangeActivityUI(ObjectNames.ButtonSlide);
+            ChangeActivityUI(ObjectNames.ButtonJump);
+            ChangeActivityUI(ObjectNames.ButtonAttack);
+        }
+
+        public Canvas GiveCanvas()
+        {
+            return _canvas;
+        }
+
+        public Button GiveButton(string targetButton)
+        {
+            Button tempButton = null;
+            GameObject tempObject = GiveUi(targetButton);
+
+            if (tempObject != null && tempObject.TryGetComponent<Button>(out Button button))
+                tempButton = button;
+
+            return tempButton;
         }
     }
 }

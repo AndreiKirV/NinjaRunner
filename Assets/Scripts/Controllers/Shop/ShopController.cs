@@ -14,9 +14,11 @@ namespace game.controllers.shop
         private GameObject _shopView;
         private GridLayoutGroup _groupView;
         public static UnityEvent <Sprite> WeaponsPurchased = new UnityEvent <Sprite>();
-        public static UnityEvent OpenShop = new UnityEvent();
+        public static UnityEvent OpenShop;
         public delegate int IntInput();
         public IntInput MoneyRequest;
+        public delegate void IntOutput(int value);
+        public IntOutput GoldSpent;
 
         private int CheckedValueWeapon()
         {
@@ -87,6 +89,8 @@ namespace game.controllers.shop
 
         public void Init()
         {
+            OpenShop = new UnityEvent();
+
             _shopView = GameMain.InstantiateObject(Resources.Load<GameObject>($"{Path.PREFABS_UI}{ObjectNames.ShopView}"), _canvas.transform);
             _shopView.name = ObjectNames.ShopView;
             _shopView.gameObject.SetActive(false);
@@ -102,6 +106,8 @@ namespace game.controllers.shop
             if (targetProduct.Price <= MoneyRequest.Invoke())
             {
                 WeaponsPurchased.Invoke(targetProduct.Weapon);
+                GoldSpent(targetProduct.Price);
+                targetProduct.SetPrice(0);
             }
         }
 

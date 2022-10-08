@@ -36,7 +36,6 @@ namespace game.controllers
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.Enemy}", ObjectNames.Enemy);
             
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.EnemyRanged}", ObjectNames.EnemyRanged);
-            Add($"{Path.PREFABS_ENEMIES}{ObjectNames.EnemyRanged}", ObjectNames.EnemyRanged);
         }
 
         public void CreateIItem(Vector3 position)

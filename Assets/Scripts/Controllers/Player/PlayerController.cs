@@ -27,6 +27,11 @@ namespace game.controllers.player
             return _player.Gold;
         }
 
+        public void TageGold(int value)
+        {
+            _player.TakeGold(value);
+        }
+
         public void SetButtonRun(Button button)
         {
             button.onClick.AddListener(_player.SetRunningState);

@@ -54,7 +54,7 @@ namespace game.enemy
 
         private void Hit()
         {
-            GameObject tempObject = Instantiate(_bullet, _bulletPosition[Random.Range(0, _bulletPosition.Length)].transform.position, Quaternion.identity);
+            GameObject tempObject = Instantiate(_bullet, _bulletPosition[Random.Range(1, _bulletPosition.Length)].transform.position, Quaternion.identity);
             _bullets.Add(tempObject);
             tempObject.name = ObjectNames.Bullet;
             tempObject.GetComponent<Bullet>().Destroyed.AddListener(DeleteBullet);
