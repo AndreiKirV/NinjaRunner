@@ -38,6 +38,7 @@ namespace game.controllers
             _playerController.SetButtonHit(_uIController.GiveButton(ObjectNames.ButtonAttack));
             _playerController.SetButtonSlide(_uIController.GiveButton(ObjectNames.ButtonSlide));
             _playerController.SetEventResetRunning(_uIController.EnableButtonRun);
+            _playerController.SetCamera(_camera);
             _playerController.Init();
 
             _backgroundController.SetOffset(4, 1);
@@ -56,6 +57,8 @@ namespace game.controllers
             _shop.MoneyRequest += _playerController.GiveWallet;
             _shop.GoldSpent += _playerController.TageGold;
             _shop.Init();
+
+            _playerController.SetEventTouchHit(_uIController.GiveButton(ObjectNames.ButtonStartRunning), _uIController.DisableButtonRun);
         }
 
         public void Start()
@@ -70,11 +73,6 @@ namespace game.controllers
             _playerController.Update();
 
             Timer += Time.deltaTime;
-        }
-
-        public void FixedUpdate()
-        {
-            _playerController.FixedUpdate();
         }
     }
 }

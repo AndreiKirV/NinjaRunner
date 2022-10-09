@@ -10,8 +10,8 @@ namespace game.controllers.player
 
     public class Player : MonoBehaviour
     {
-        private int _gold = 1500;
-        private int _lives = 2;
+        private int _gold = 0;
+        private int _lives = 3;
         private int _trickValue = 0;
         private int _fragValue = 0;
         private int _maxJump = 1;

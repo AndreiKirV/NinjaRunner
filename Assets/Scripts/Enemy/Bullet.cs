@@ -47,7 +47,9 @@ namespace game.enemy
                 {
                     Ruin();
                     other.gameObject.GetComponent<Bullet>().ReverseDirection();
-                }                
+                }
+                else
+                    _rebounded = true;          
             }
         }
 

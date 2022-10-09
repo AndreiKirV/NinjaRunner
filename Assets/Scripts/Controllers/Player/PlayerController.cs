@@ -52,9 +52,24 @@ namespace game.controllers.player
             button.onClick.AddListener(_player.TrySetSlideState);
         }
 
+        public void SetCamera(Camera camera)
+        {
+            _movementController.SetCamera(camera);
+        }
+
         public void SetEventResetRunning(UnityEngine.Events.UnityAction call)
         {
             _player.ResetRunning.AddListener(call);
+        }
+
+        public void SetEventTouchHit(Button button, UnityEngine.Events.UnityAction call)
+        {
+            _movementController.TouchHit.AddListener(delegate {
+                if (button.gameObject.activeSelf)
+                {
+                    call.Invoke();
+                }
+            });
         }
 
         public void Init() 
@@ -85,11 +100,6 @@ namespace game.controllers.player
         public void Update()
         {
             _movementController.Update();
-        }
-
-        public void FixedUpdate() 
-        {
-            _movementController.FixedUpdate();
         }
     }
 }

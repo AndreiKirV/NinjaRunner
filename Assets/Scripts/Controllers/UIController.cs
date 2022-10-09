@@ -19,6 +19,8 @@ namespace game.controllers
         private Dictionary<string, TextMeshProUGUI> _counters = new Dictionary<string, TextMeshProUGUI>();
         public delegate int IntInput();
         public static IntInput LivesRequest;
+        public delegate bool BoolOutput(string name);
+        public static BoolOutput PanelRequest;
 
         public UIController(Camera camera)
         {
@@ -59,6 +61,8 @@ namespace game.controllers
                 Time.timeScale = 0;
                 ChangeActivityUI(ObjectNames.Panel);
                 });
+
+            PanelRequest = CheckActivityElement;
         }
 
         private void CreateMenu()
@@ -201,7 +205,7 @@ namespace game.controllers
             _elements[targetObject].SetActive(!_elements[targetObject].activeSelf);
         }
 
-        private void DisableButtonRun()
+        public void DisableButtonRun()
         {
             if (int.Parse(_counters[ObjectNames.LiveCounter].text) > 0)
             {
@@ -245,10 +249,13 @@ namespace game.controllers
 
         public void EnableButtonRun()
         {
-            ChangeActivityUI(ObjectNames.ButtonStartRunning);
-            ChangeActivityUI(ObjectNames.ButtonSlide);
-            ChangeActivityUI(ObjectNames.ButtonJump);
-            ChangeActivityUI(ObjectNames.ButtonAttack);
+            if (_elements[ObjectNames.ButtonStartRunning].activeSelf == false)
+            {
+                ChangeActivityUI(ObjectNames.ButtonStartRunning);
+                ChangeActivityUI(ObjectNames.ButtonSlide);
+                ChangeActivityUI(ObjectNames.ButtonJump);
+                ChangeActivityUI(ObjectNames.ButtonAttack);
+            }
         }
 
         public Canvas GiveCanvas()
@@ -265,6 +272,11 @@ namespace game.controllers
                 tempButton = button;
 
             return tempButton;
+        }
+
+        private bool CheckActivityElement(string name)
+        {
+            return _elements[name].activeSelf;
         }
     }
 }
