@@ -14,7 +14,7 @@ namespace game.enemy
         [SerializeField] private List<SpriteRenderer> _bones = new List<SpriteRenderer>();
         [SerializeField] private GameObject _bloodEffect;
         private int _valueAnimationTrickDeath = 1;
-        private float _trickChance = 33.3f;
+        private float _trickChance = 100f;
         private int _trickNumber;
         private float _timePreviousHit;
         private float _coolDownHit = 1;
@@ -27,6 +27,7 @@ namespace game.enemy
         private EnemyAnimationController _ainmator;
         private Player _player;
         public UnityEvent <int> StartTrickDeath = new UnityEvent <int> ();
+        public UnityEvent Dead = new UnityEvent();
 
         private void Awake() 
         {
@@ -72,7 +73,6 @@ namespace game.enemy
                 if (!_isTrick)
                 {
                     Die();
-                    other.gameObject.transform.parent.GetComponent<Player>().AddFragValue();
                 }
                 else
                 {
@@ -86,6 +86,7 @@ namespace game.enemy
 
         private void Die()
         {
+            Dead.Invoke();
             _ainmator.StartDeath();
             GameObject tempObject = _view.GiveBodyPart();
             _bloodEffect.SetActive(true);

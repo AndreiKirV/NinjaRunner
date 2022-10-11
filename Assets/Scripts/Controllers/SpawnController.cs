@@ -35,7 +35,7 @@ namespace game.controllers
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.Enemy}", ObjectNames.Enemy);
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.Enemy}", ObjectNames.Enemy);
             
-            Add($"{Path.PREFABS_ENEMIES}{ObjectNames.EnemyRanged}", ObjectNames.EnemyRanged);
+            //Add($"{Path.PREFABS_ENEMIES}{ObjectNames.EnemyRanged}", ObjectNames.EnemyRanged);
         }
 
         public void CreateIItem(Vector3 position)
@@ -53,6 +53,7 @@ namespace game.controllers
             }
             else if (tempObject.name == ObjectNames.Enemy)
             {
+                tempObject.GetComponent<MeleeEnemy>().Dead.AddListener(_player.AddFragValue);
                 _player.DeathByObstacle.AddListener(delegate {
                     GameMain.DestroyObject(tempObject, 1f);
                 });

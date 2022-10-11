@@ -66,6 +66,9 @@ MonoBehaviour:
   StartTrickDeath:
     m_PersistentCalls:
       m_Calls: []
+  Dead:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!50 &435191495457625882
 Rigidbody2D:
   serializedVersion: 4

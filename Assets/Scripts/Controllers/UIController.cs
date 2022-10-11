@@ -17,6 +17,7 @@ namespace game.controllers
         private Canvas _canvas;
         private Dictionary<string, GameObject> _elements = new Dictionary<string, GameObject>();
         private Dictionary<string, TextMeshProUGUI> _counters = new Dictionary<string, TextMeshProUGUI>();
+        private SaveRecordController _records;
         public delegate int IntInput();
         public static IntInput LivesRequest;
         public delegate bool BoolOutput(string name);
@@ -29,8 +30,9 @@ namespace game.controllers
 
         private void MenuInit()
         {
+            _records = _elements[ObjectNames.RecordCounter].GetComponent<SaveRecordController>();
             
-            GiveButton($"{ObjectNames.Button}Continue").onClick.AddListener(delegate {
+            GiveButton($"{ObjectNames.Button}{ObjectNames.Continue}").onClick.AddListener(delegate {
                 if (LivesRequest.Invoke() > 0)
                 {
                     ChangeActivityUI(ObjectNames.Panel);
@@ -38,18 +40,20 @@ namespace game.controllers
                 }
                 });
 
-            GiveButton($"{ObjectNames.Button}Restart").onClick.AddListener(delegate {
+            GiveButton($"{ObjectNames.Button}{ObjectNames.Restart}").onClick.AddListener(delegate {
+                _records.SetValue(int.Parse(_counters[ObjectNames.TrickCounter].text), int.Parse(_counters[ObjectNames.FragCounter].text));
                 Player.CalculateGold.Invoke();
                 ChangeActivityUI(ObjectNames.Panel);
                 Time.timeScale = 1;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
                 });
                 
-            GiveButton($"{ObjectNames.Button}Shop").onClick.AddListener(delegate {
+            GiveButton($"{ObjectNames.Button}{ObjectNames.Shop}").onClick.AddListener(delegate {
                 ShopController.OpenShop.Invoke();
                 });
 
-            GiveButton($"{ObjectNames.Button}Exit").onClick.AddListener(delegate {
+            GiveButton($"{ObjectNames.Button}{ObjectNames.Exit}").onClick.AddListener(delegate {
+                _records.SetValue(int.Parse(_counters[ObjectNames.TrickCounter].text), int.Parse(_counters[ObjectNames.FragCounter].text));
                 Player.CalculateGold.Invoke();
                 Application.Quit();
                 });
@@ -70,27 +74,29 @@ namespace game.controllers
         private void CreateMenu()
         {
             CreatePrefabUI(ObjectNames.Panel).SetActive(false);
-            CreateButtonMenu("Continue");
-            CreateButtonMenu("Restart");
-            CreateButtonMenu("Shop");
-            CreateButtonMenu("Exit");
-            CreateButton(ObjectNames.ButtonResetPlayer, "ButtonContinue");
+            CreateButtonMenu(ObjectNames.Continue);
+            CreateButtonMenu(ObjectNames.Restart);
+            CreateButtonMenu(ObjectNames.Shop);
+            CreateButtonMenu(ObjectNames.Exit);
+            CreatePrefabUI(ObjectNames.RecordCounter, ObjectNames.RecordCounter, _elements[ObjectNames.Panel]);
+
+            CreateObject(ObjectNames.ButtonResetPlayer, ObjectNames.ButtonContinue);
 
             float with = _canvas.gameObject.GetComponent<CanvasScaler>().referenceResolution.x;
-            float height = _canvas.gameObject.GetComponent<CanvasScaler>().referenceResolution.y / 5;
+            float height = _canvas.gameObject.GetComponent<CanvasScaler>().referenceResolution.y / 6.5f;
             _elements[ObjectNames.Panel].GetComponent<GridLayoutGroup>().cellSize = new Vector2(with, height);
         }
 
         private void CreateButtonMenu(string name)
         {
-            GameObject tempButton = CreatePrefabUI(ObjectNames.Button, $"{ObjectNames.Button}{name}");
-            tempButton.SetActive(true);
-            tempButton.name = name;
-            tempButton.transform.SetParent(_elements[ObjectNames.Panel].transform);
-            tempButton.GetComponentInChildren<TextMeshProUGUI>().text = name;
+            GameObject tempObject = CreatePrefabUI(ObjectNames.Button, $"{ObjectNames.Button}{name}");
+            tempObject.SetActive(true);
+            tempObject.name = name;
+            tempObject.transform.SetParent(_elements[ObjectNames.Panel].transform);
+            tempObject.GetComponentInChildren<TextMeshProUGUI>().text = name;
         }
 
-        private void CreateButton(string name, string parent)
+        private void CreateObject(string name, string parent)
         {
             GameObject tempButton = CreatePrefabUI(name, name, _elements[parent]);
             tempButton.SetActive(true);
@@ -242,6 +248,7 @@ namespace game.controllers
             CreateCounters();
             
             GiveButton(ObjectNames.ButtonMenu).onClick.AddListener(delegate {
+                _records.SetValue(int.Parse(_counters[ObjectNames.TrickCounter].text), int.Parse(_counters[ObjectNames.FragCounter].text));
                 ChangeActivityUI(ObjectNames.Panel);
                 Time.timeScale = 0;
             });

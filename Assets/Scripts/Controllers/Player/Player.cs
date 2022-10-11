@@ -429,7 +429,7 @@ namespace game.controllers.player
         {
             SetIdleState();
             TryEventInvoke(ResetRunning);
-            _lives = 2;
+            _lives += 1;
             TryEventInvoke(ValueLivesChanged, _lives);
         }
 
@@ -437,7 +437,6 @@ namespace game.controllers.player
         {
             ResetRunningState();
             TryEventInvoke(StartTrickDeath, value);
-            AddFragValue();
         }
 
         public void TryStartedClash()

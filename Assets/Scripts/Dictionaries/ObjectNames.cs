@@ -57,5 +57,11 @@ namespace dictionaries
         public static readonly string Sword = "Sword";
         public static readonly string ButtonExit = "ButtonExit";
         public static readonly string Gold = "Gold";
+        public static readonly string Continue = "Continue";
+        public static readonly string Restart = "Restart";
+        public static readonly string Shop = "Shop";
+        public static readonly string Exit = "Exit";
+        public static readonly string ButtonContinue = "ButtonContinue";
+        public static readonly string RecordCounter = "RecordCounter";
     }
 }
