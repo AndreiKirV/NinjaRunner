@@ -15,6 +15,7 @@ namespace game.controllers.player
         private Vector3 _touch;
         private Camera _camera;
         private Button _buttonRun;
+        private bool _touchInArea = false;
         public UnityEvent TouchJump = new UnityEvent();
         public UnityEvent TouchSlide = new UnityEvent();
         public UnityEvent TouchHit = new UnityEvent();
@@ -26,17 +27,18 @@ namespace game.controllers.player
                 if (UIController.PanelRequest(ObjectNames.Panel) == false && (_camera.ScreenToViewportPoint(Input.mousePosition).x <= 0.8f || _camera.ScreenToViewportPoint(Input.mousePosition).y >= 0.35f))
                 {
                     _touch = _camera.ScreenToViewportPoint(Input.mousePosition);
+                    _touchInArea = true;
                 }
             }
-            else if (Input.GetMouseButtonUp(0))
+            else if (Input.GetMouseButtonUp(0) && _touchInArea)
             {
                 Vector3 touchEnd = _camera.ScreenToViewportPoint(Input.mousePosition);
                 
-                if (touchEnd.y > _touch.y)
+                if (touchEnd.y > _touch.y && touchEnd.y - _touch.y >= 0.1)
                 {
                     TouchJump.Invoke();
                 }
-                else if (touchEnd.y < _touch.y)
+                else if (touchEnd.y < _touch.y && _touch.y - touchEnd.y >= 0.1)
                 {
                     TouchSlide.Invoke();
                 }
@@ -44,6 +46,8 @@ namespace game.controllers.player
                 {
                     TouchHit.Invoke();
                 }
+
+                _touchInArea = false;
             }
         }
 
@@ -54,8 +58,8 @@ namespace game.controllers.player
 
         public void Update()
         {
-            TryRun();
             TryTouchMove();
+            TryRun();
         }
 
         public void SetPlayer(GameObject player)

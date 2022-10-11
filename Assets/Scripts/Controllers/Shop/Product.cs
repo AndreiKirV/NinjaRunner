@@ -44,7 +44,7 @@ namespace game.controllers.shop
             _button = _view.GetComponentInChildren<Button>();
             _button.onClick.AddListener(delegate {
                 WeaponsSelected.Invoke(this);
-
+                PlayerPrefs.SetInt(_weapon.name, 1);
                 });
         }
 

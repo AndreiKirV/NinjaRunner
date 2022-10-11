@@ -49,34 +49,41 @@ namespace game.controllers.shop
             for (int i = 0; i < maxWeapon; i++)
             {
                 Product tempProduct = new Product(_groupView.gameObject.transform);
-                tempProduct.SetSprite(Resources.Load<Sprite>($"{Path.WEAPON}{i+1}"));
+                Sprite tempSprite = Resources.Load<Sprite>($"{Path.WEAPON}{i+1}");
+                tempSprite.name = (i+1).ToString();
+                tempProduct.SetSprite(tempSprite);
                 tempProduct.WeaponsSelected.AddListener(GiveWeapon);
 
-                if (i+1 == 41 || i+1 == 42 || i+1 == 43)
+                if (!PlayerPrefs.HasKey(tempSprite.name))
                 {
-                    tempProduct.SetPrice(0);
-                }
-                else
-                {    
-                    switch (i % 5) 
+                    if (i+1 == 41 || i+1 == 42 || i+1 == 43)
                     {
-                        case 0: 
-                            tempProduct.SetPrice(50);
-                            break;
-                        case 1:
-                            tempProduct.SetPrice(100);
-                            break;
-                        case 2:
-                            tempProduct.SetPrice(150);
-                            break;
-                        case 3:
-                            tempProduct.SetPrice(200);
-                            break;
-                        case 4:
-                            tempProduct.SetPrice(250);
-                            break;
+                        tempProduct.SetPrice(0);
+                    }
+                    else
+                    {    
+                        switch (i % 5) 
+                        {
+                            case 0: 
+                                tempProduct.SetPrice(50);
+                                break;
+                            case 1:
+                                tempProduct.SetPrice(100);
+                                break;
+                            case 2:
+                                tempProduct.SetPrice(150);
+                                break;
+                            case 3:
+                                tempProduct.SetPrice(200);
+                                break;
+                            case 4:
+                                tempProduct.SetPrice(250);
+                                break;
+                        }
                     }
                 }
+                else
+                tempProduct.SetPrice(0);
             }
 
             Resources.UnloadUnusedAssets();

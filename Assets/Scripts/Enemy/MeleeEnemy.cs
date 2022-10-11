@@ -9,7 +9,7 @@ namespace game.enemy
     using game.controllers;
     using UnityEngine.Events;
 
-    public class MeleeEnemy : Enemy
+    public class MeleeEnemy : MonoBehaviour
     {
         [SerializeField] private List<SpriteRenderer> _bones = new List<SpriteRenderer>();
         [SerializeField] private GameObject _bloodEffect;

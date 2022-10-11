@@ -14,6 +14,8 @@ namespace game.controllers.player
         private int _lives = 3;
         private int _trickValue = 0;
         private int _fragValue = 0;
+        private int _fragPrice = 2;
+        private int _trickPrice = 1;
         private int _maxJump = 1;
         private int _currentValueJump = 0;
         private int _stepSpeed = 1;
@@ -67,6 +69,7 @@ namespace game.controllers.player
         public static UnityEvent<int> ValueGoldChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueFragChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueCurrentSpeedChanged = new UnityEvent<int>();
+        public static UnityEvent CalculateGold = new UnityEvent();
 
         private void Awake() 
         {
@@ -74,11 +77,10 @@ namespace game.controllers.player
             ResPlayer.AddListener(ResetPlayer);
             _weapon = gameObject.transform.Find(ObjectNames.Body).transform.Find(ObjectNames.Sword).gameObject.GetComponent<SpriteRenderer>();
             ShopController.WeaponsPurchased.AddListener(ChangeWeapon);
-        }
+            CalculateGold.AddListener(CalculateTranslationIntoGold);
 
-        private void ChangeWeapon(Sprite sprite)
-        {
-            _weapon.sprite = sprite;
+                if (PlayerPrefs.HasKey(ObjectNames.Weapon))
+            _weapon.sprite = Resources.Load<Sprite>($"{Path.WEAPON}{PlayerPrefs.GetString(ObjectNames.Weapon)}");
         }
 
         private void Update() 
@@ -122,6 +124,23 @@ namespace game.controllers.player
             {
                 healingChest.AddListenerEvent(AddLives);
             }
+        }
+
+        private void CalculateTranslationIntoGold()
+        {
+            _gold += _fragValue * _fragPrice + _trickPrice * _trickValue;
+            _fragValue = 0;
+            _trickValue = 0;
+            TryEventInvoke(ValueTrickChanged, _trickValue);
+            TryEventInvoke(ValueGoldChanged, _gold);
+            TryEventInvoke(ValueFragChanged, _fragValue);
+            PlayerPrefs.SetInt(ObjectNames.Gold, _gold);
+        }
+
+        private void ChangeWeapon(Sprite sprite)
+        {
+            _weapon.sprite = sprite;
+            PlayerPrefs.SetString(ObjectNames.Weapon, sprite.name);
         }
 
         private void TryDeath()
@@ -375,6 +394,9 @@ namespace game.controllers.player
 
         public void Init()
         {
+            if (PlayerPrefs.HasKey(ObjectNames.Gold))
+                _gold = PlayerPrefs.GetInt(ObjectNames.Gold);
+
             _attackBox = gameObject.transform.Find(ObjectNames.AttackBox).gameObject;
 
             SetCurrentSpeed(_startSpeed);
@@ -427,6 +449,7 @@ namespace game.controllers.player
             if (_lives <= 1)
             {
                 TryStartedDeath();
+                CalculateTranslationIntoGold();
             }
             else if (_lives > 1)
             {
@@ -438,6 +461,7 @@ namespace game.controllers.player
         {
             _gold -= value;
             TryEventInvoke(ValueGoldChanged, _gold);
+            PlayerPrefs.SetInt(ObjectNames.Gold, _gold);
         }
 
         public static void DeathInit()

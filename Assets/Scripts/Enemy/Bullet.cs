@@ -13,6 +13,7 @@ namespace game.enemy
         private float _speed = 55;
         private bool _rebounded = false;
         public UnityEvent <GameObject> Destroyed = new UnityEvent<GameObject>();
+        public bool Rebounded => _rebounded;
 
         private void OnCollisionEnter2D(Collision2D other) 
         {
@@ -26,7 +27,6 @@ namespace game.enemy
                 other.gameObject.GetComponent<EnemyRanged>().Death();
                 Ruin();
             }
-            
         }
 
         private void Start() 
@@ -40,12 +40,14 @@ namespace game.enemy
             {
                 _speed = -other.gameObject.transform.parent.GetComponent<Player>().CurrentSpeed - _speed;
                 _rebounded = true;
+                transform.Find(ObjectNames.EndZone).gameObject.transform.localScale = new Vector3(0.1f,0.1f,0.1f);
             }
             else if (other.gameObject.name == ObjectNames.Bullet)
             {
                 if (_rebounded)
                 {
                     Ruin();
+                    if (other.gameObject.transform.position.y == gameObject.transform.position.y)
                     other.gameObject.GetComponent<Bullet>().ReverseDirection();
                 }
                 else

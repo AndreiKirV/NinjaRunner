@@ -8,7 +8,7 @@ namespace game.enemy
     using game.controllers;
     using UnityEngine.Events;
 
-    public class EnemyRanged : Enemy
+    public class EnemyRanged : MonoBehaviour
     {
         [SerializeField] private List<SpriteRenderer> _bones = new List<SpriteRenderer>();
         [SerializeField] private GameObject _bullet; 
@@ -68,6 +68,17 @@ namespace game.enemy
         private void DeleteBullet(GameObject bullet)
         {
             _bullets.Remove(bullet);
+        }
+
+        private void OnDestroy() 
+        {
+            if (_bullets.Count > 0)
+            {
+                foreach (var item in _bullets)
+                {
+                    Destroy(item);
+                }
+            }
         }
 
         public void Death()

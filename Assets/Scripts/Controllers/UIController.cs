@@ -39,6 +39,7 @@ namespace game.controllers
                 });
 
             GiveButton($"{ObjectNames.Button}Restart").onClick.AddListener(delegate {
+                Player.CalculateGold.Invoke();
                 ChangeActivityUI(ObjectNames.Panel);
                 Time.timeScale = 1;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().name);
@@ -49,6 +50,7 @@ namespace game.controllers
                 });
 
             GiveButton($"{ObjectNames.Button}Exit").onClick.AddListener(delegate {
+                Player.CalculateGold.Invoke();
                 Application.Quit();
                 });
 
