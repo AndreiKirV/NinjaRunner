@@ -63,5 +63,12 @@ namespace dictionaries
         public static readonly string Exit = "Exit";
         public static readonly string ButtonContinue = "ButtonContinue";
         public static readonly string RecordCounter = "RecordCounter";
+        public static readonly string SoundCrash = "Crash";
+        public static readonly string SoundJump ="Jump";
+        public static readonly string SoundDeath = "Death";
+        public static readonly string SoundHit = "Hit";
+        public static readonly string SoundSlide = "Slide";
+        public static readonly string SoundSwing = "Swing";
+        public static readonly string SoundTrick = "Trick";
     }
 }

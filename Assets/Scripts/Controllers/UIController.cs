@@ -49,6 +49,7 @@ namespace game.controllers
                 });
                 
             GiveButton($"{ObjectNames.Button}{ObjectNames.Shop}").onClick.AddListener(delegate {
+                Player.CalculateGold.Invoke();
                 ShopController.OpenShop.Invoke();
                 });
 

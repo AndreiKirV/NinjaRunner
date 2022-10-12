@@ -10,12 +10,17 @@ namespace game.item
     public class Item : MonoBehaviour
     {
         protected Animator _animator;
+        protected AudioSource _audioSource;
         protected float _demolitionDistance = 23;
         private bool isSigned = false;
         private void Awake() 
         {
             if (TryGetComponent<Animator>(out Animator animator))
             _animator = animator;
+
+            if (TryGetComponent<AudioSource>(out AudioSource audioSource))
+            _audioSource = audioSource;
+            _audioSource.clip = Resources.Load<AudioClip>(Path.Sounds + ObjectNames.SoundCrash);
 
             GameMain.DestroyObject(gameObject, 10);
         }
@@ -41,6 +46,7 @@ namespace game.item
         {
             if (other.gameObject.name == ObjectNames.AttackBox && transform.position.x - other.gameObject.transform.position.x <= _demolitionDistance && transform.position.x - other.gameObject.transform.position.x >=0)
             {
+                _audioSource.Play();
                 StartAnimatingCrashed();
             }
         }
@@ -53,6 +59,8 @@ namespace game.item
 
         protected virtual void StartAnimatingCrashed()
         {
+            _audioSource.Play();
+            
             if (_animator != null)
             _animator.SetTrigger("IsCrashed");
         }

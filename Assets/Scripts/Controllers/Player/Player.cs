@@ -11,7 +11,7 @@ namespace game.controllers.player
     public class Player : MonoBehaviour
     {
         private int _gold = 0;
-        private int _lives = 3;
+        private int _lives = 2;
         private int _trickValue = 0;
         private int _fragValue = 0;
         private int _fragPrice = 2;
@@ -38,6 +38,9 @@ namespace game.controllers.player
         private GameObject _attackBox;
         private ParticleSystem _fatigueEffect;
         private SpriteRenderer _weapon = new SpriteRenderer();
+        private AudioSource _audioSource;
+
+        private Dictionary<string, AudioClip> _sounds = new Dictionary<string, AudioClip>();
 
         private List<string> _states = new List<string>();
 
@@ -70,6 +73,7 @@ namespace game.controllers.player
         public static UnityEvent<int> ValueFragChanged = new UnityEvent<int>();
         public static UnityEvent<int> ValueCurrentSpeedChanged = new UnityEvent<int>();
         public static UnityEvent CalculateGold = new UnityEvent();
+        public static UnityEvent<int, int> ValueRecordsChanged = new UnityEvent<int, int>();
 
         private void Awake() 
         {
@@ -81,6 +85,8 @@ namespace game.controllers.player
 
                 if (PlayerPrefs.HasKey(ObjectNames.Weapon))
             _weapon.sprite = Resources.Load<Sprite>($"{Path.WEAPON}{PlayerPrefs.GetString(ObjectNames.Weapon)}");
+
+            AudioSourceInit();
         }
 
         private void Update() 
@@ -124,6 +130,33 @@ namespace game.controllers.player
             {
                 healingChest.AddListenerEvent(AddLives);
             }
+        }
+
+        private void AudioSourceInit()
+        {
+            _audioSource = GetComponent<AudioSource>();
+        }
+
+        private void AudioClipInit()
+        {
+            _sounds.Add(ObjectNames.SoundJump, Resources.Load<AudioClip>(Path.Sounds + ObjectNames.SoundJump));
+            _sounds.Add(ObjectNames.SoundDeath, Resources.Load<AudioClip>(Path.Sounds + ObjectNames.SoundDeath));
+            _sounds.Add(ObjectNames.SoundHit, Resources.Load<AudioClip>(Path.Sounds + ObjectNames.SoundHit));
+            _sounds.Add(ObjectNames.SoundSlide, Resources.Load<AudioClip>(Path.Sounds + ObjectNames.SoundSlide));
+            _sounds.Add(ObjectNames.SoundSwing, Resources.Load<AudioClip>(Path.Sounds + ObjectNames.SoundSwing));
+            _sounds.Add(ObjectNames.SoundTrick, Resources.Load<AudioClip>(Path.Sounds + ObjectNames.SoundTrick));
+        }
+
+        private void PlaySoundHit()
+        {
+            PlaySound(ObjectNames.SoundHit);
+        }
+
+        private void PlaySound(string targetAudio)
+        {
+            _audioSource.Stop();
+            _audioSource.clip = _sounds[targetAudio];
+            _audioSource.Play();
         }
 
         private void CalculateTranslationIntoGold()
@@ -170,6 +203,8 @@ namespace game.controllers.player
         {
             if (!CheckForState(PlayerStates.JumpObstacle) && !CheckForState(PlayerStates.IsTrickZone))
             {
+                PlaySound(ObjectNames.SoundDeath);
+                ValueRecordsChanged.Invoke(_trickValue, _fragValue);
                 TryEventInvoke(DeathByObstacle);
                 TrySetState(PlayerStates.DeathByObstacle);
                 ResetRunningState();
@@ -329,6 +364,7 @@ namespace game.controllers.player
         {
             if (CheckForState(PlayerStates.IsRun) && ControllerManager.Timer >= _coolDownSlide + _timePreviousSlide)
             {
+                PlaySound(ObjectNames.SoundSlide);
                 TrySetState(PlayerStates.Slide);
                 TryEventInvoke(StartedSlide);
                 _timePreviousSlide = ControllerManager.Timer;
@@ -358,9 +394,11 @@ namespace game.controllers.player
                 TryEventInvoke(StartedJumping);
                 _currentValueJump ++;
                 _timePreviousJump = ControllerManager.Timer;
+                PlaySound(ObjectNames.SoundJump);
             }
             else if (ControllerManager.Timer >= _coolDownJump + _timePreviousJump && CheckForState(PlayerStates.IsTrickZone) && !CheckForState(PlayerStates.IsStopZone) && !CheckForState(PlayerStates.Slide))
             {
+                PlaySound(ObjectNames.SoundTrick);
                 TrySetState(PlayerStates.JumpObstacle);
             }
             else if (ControllerManager.Timer <= _coolDownJump + _timePreviousJump)
@@ -382,6 +420,7 @@ namespace game.controllers.player
         {
             if (_states.Count <= 1 && CheckForState(PlayerStates.IsRun) && ControllerManager.Timer >= _coolDownHit + _timePreviousHit)
             {
+                PlaySound(ObjectNames.SoundSwing);
                 TrySetState(PlayerStates.Hit);
                 TryEventInvoke(StartedHit);
                 _timePreviousHit = ControllerManager.Timer;
@@ -416,6 +455,8 @@ namespace game.controllers.player
             _timePreviousSlide = -_coolDownSlide;
 
             UIController.LivesRequest += GiveLivesValue;
+
+            AudioClipInit();
 
             Resources.UnloadUnusedAssets();
         }
@@ -452,6 +493,7 @@ namespace game.controllers.player
             }
             else if (_lives > 1)
             {
+                PlaySoundHit();
                 TryStartedCrashed();
             }
         }

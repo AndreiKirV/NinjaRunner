@@ -21,7 +21,7 @@ namespace game.controllers
         }
 
         public void Init()
-        {/*
+        {
             Add($"{Path.DECOR}{ObjectNames.Trunk}", ObjectNames.Trunk);
             Add($"{Path.DECOR}{ObjectNames.HealingChest}", ObjectNames.HealingChest);
             Add($"{Path.DECOR}{ObjectNames.Box}", ObjectNames.JumpingObstacle);
@@ -30,12 +30,12 @@ namespace game.controllers
             Add($"{Path.DECOR}{ObjectNames.FishBox}", ObjectNames.JumpingObstacle);
             Add($"{Path.DECOR}{ObjectNames.FullTable}", ObjectNames.SlideObstacle);
             Add($"{Path.DECOR}{ObjectNames.Table}", ObjectNames.SlideObstacle);
-            Add($"{Path.DECOR}{ObjectNames.TableWithArmor}", ObjectNames.SlideObstacle);*/
+            Add($"{Path.DECOR}{ObjectNames.TableWithArmor}", ObjectNames.SlideObstacle);
             
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.Enemy}", ObjectNames.Enemy);
             Add($"{Path.PREFABS_ENEMIES}{ObjectNames.Enemy}", ObjectNames.Enemy);
             
-            //Add($"{Path.PREFABS_ENEMIES}{ObjectNames.EnemyRanged}", ObjectNames.EnemyRanged);
+            Add($"{Path.PREFABS_ENEMIES}{ObjectNames.EnemyRanged}", ObjectNames.EnemyRanged);
         }
 
         public void CreateIItem(Vector3 position)

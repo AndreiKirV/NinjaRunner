@@ -14,7 +14,7 @@ namespace game.enemy
         [SerializeField] private List<SpriteRenderer> _bones = new List<SpriteRenderer>();
         [SerializeField] private GameObject _bloodEffect;
         private int _valueAnimationTrickDeath = 1;
-        private float _trickChance = 100f;
+        private float _trickChance = 30f;
         private int _trickNumber;
         private float _timePreviousHit;
         private float _coolDownHit = 1;
@@ -86,6 +86,7 @@ namespace game.enemy
 
         private void Die()
         {
+            GetComponent<AudioSource>().Play();
             Dead.Invoke();
             _ainmator.StartDeath();
             GameObject tempObject = _view.GiveBodyPart();

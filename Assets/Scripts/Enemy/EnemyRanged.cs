@@ -83,6 +83,7 @@ namespace game.enemy
 
         public void Death()
         {
+            GetComponent<AudioSource>().Play();
             Dead.Invoke();
             _ainmator.StartDeath();
             Destroy(gameObject, _timeDestroy);

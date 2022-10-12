@@ -5,11 +5,16 @@ namespace game.controllers
     using UnityEngine;
     using TMPro;
     using dictionaries;
+    using game.controllers.player;
 
     public class SaveRecordController : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI _trickValue;
         [SerializeField] private TextMeshProUGUI _fragValue;
+        private void Awake() 
+        {
+            Player.ValueRecordsChanged.AddListener(SetValue);
+        }
         private void Start()
         {
             if (PlayerPrefs.HasKey(ObjectNames.TrickCounter))
