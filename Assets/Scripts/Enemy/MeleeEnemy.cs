@@ -13,8 +13,8 @@ namespace game.enemy
     {
         [SerializeField] private List<SpriteRenderer> _bones = new List<SpriteRenderer>();
         [SerializeField] private GameObject _bloodEffect;
-        private int _valueAnimationTrickDeath = 1;
-        private float _trickChance = 30f;
+        private int _valueAnimationTrickDeath = 4;
+        private float _trickChance = 33.3f;
         private int _trickNumber;
         private float _timePreviousHit;
         private float _coolDownHit = 1;
@@ -81,6 +81,7 @@ namespace game.enemy
                     TryTrickDeath();
                 }
                 
+                Destroy(gameObject, 10);
             }
         }
 

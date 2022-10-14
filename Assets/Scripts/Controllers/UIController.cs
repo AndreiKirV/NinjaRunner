@@ -69,6 +69,8 @@ namespace game.controllers
                 ChangeActivityUI(ObjectNames.Panel);
                 });
 
+            GiveButton(ObjectNames.ButtonResetPlayer).gameObject.SetActive(false);
+
             PanelRequest = CheckActivityElement;
         }
 

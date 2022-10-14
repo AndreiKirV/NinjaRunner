@@ -117,7 +117,7 @@ namespace game.controllers.player
                 _trickEffect.SetActive(true);
             }
 
-            if ((other.gameObject.name == ObjectNames.StopZone || other.gameObject.name == ObjectNames.AttackBox) && !_attackBox.activeSelf)
+            if ((other.gameObject.name == ObjectNames.StopZone || other.gameObject.name == ObjectNames.AttackBox) && !_attackBox.activeSelf && !CheckForState(PlayerStates.JumpObstacle))
             {
                 TryStartedClash();
             }
@@ -489,7 +489,6 @@ namespace game.controllers.player
             if (_lives <= 1)
             {
                 TryStartedDeath();
-                CalculateTranslationIntoGold();
             }
             else if (_lives > 1)
             {
